@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/** Footer */
+.bg-footer {
+  background-image: url('./assets/footerImgEdit.jpg');
+  /* height: 50vh; */
+}
+@media screen and (min-width: 768px) {
+  .bg-footer {
+    background-position: center top;
+  }
+}
+.bg-footer-layer {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.footer-navlinks:hover {
+  color: #ff9933;
+}
+.footer-links:hover {
+  opacity: 0.8;
+}
+
+/**  Home */
+.bg-home {
+  background-image: url('./assets/homepage.jpg');
+}
+
+.bg-home-coffee {
+  background-image: url('./assets/homeCoffee.jpg');
+}
+
+/** About */
+.bg-about-origin {
+  background-image: url('./assets/about/Definition.jpg');
+}
+.bg-about-policy {
+  background-image: url('./assets/about/policy/policyBg.jpg');
+}
+.bg-about-howitworks {
+  background-image: url('./assets/about/howitworks/howitworksBg.jpg');
+}
+.bg-about-benefittocat {
+  background-image: url('./assets/about/benefitstocat/benefittocatBg.jpg');
+}
+
+/** Shops */
+.bg-shops {
+  background-image: url('./assets/shops/ourShopsBg.jpg');
+}
+
+/** My booking */
+.bg-my-booking {
+  background-image: url('./assets/mybooking.jpg');
+}
+
+/** Item booking  */
+.bg-item-booking {
+  background-image: url('./assets/itemBooking.jpg');
+}
+
+/** Carousel  */
+.my-carousel .splide__arrow {
+  background-color: #b96714;
+}
+.my-carousel .splide__arrow--prev svg,
+.my-carousel .splide__arrow--next svg {
+  fill: #ff9933;
+}
+.my-carousel .splide__pagination__page {
+  background-color: #b96714;
+}
+.my-carousel .splide__pagination__page.is-active {
+  background-color: orangered;
+}
+
+/* Sizing map container */
+.leaflet-top {
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+}
+.leaflet-container {
+  height: 400px;
+  width: 100%;
+}
+
+.geosearch {
+  background-color: white;
+  padding: 5px;
+  height: 50px;
+  /* display: grid;
+  grid-template-columns: 12fr; */
+}
+
+.leaflet-control-geosearch input {
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.reset {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.leaflet-control-geosearch a {
+  visibility: hidden;
+}
+
+/* .leaflet-control-geosearch a:hover {
+  background-color: #ccc;
+} */
+
+.leaflet-control-geosearch .results {
+  background-color: white;
+  color: black;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.leaflet-bar-part-single a {
+  /* visibility: hidden; */
+  background-color: black;
+}
+
+/*MUI custom.css */
+.MuiStep-root {
+  padding: 0.5rem 0; /* Adjust this value to change the spacing */
+}
