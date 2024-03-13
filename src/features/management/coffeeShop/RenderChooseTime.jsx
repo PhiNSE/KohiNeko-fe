@@ -4,7 +4,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, set } from "react-hook-form";
 import { HiOutlineMinus } from "react-icons/hi";
 
 const RenderChooseTime = ({
@@ -13,6 +13,8 @@ const RenderChooseTime = ({
   day,
   selectedDayTime,
   setSelectedDayTime,
+  disableDay,
+  setErrorDay,
 }) => {
   const theme = createTheme({
     palette: {
@@ -68,7 +70,7 @@ const RenderChooseTime = ({
   }, [dayTime]);
 
   useEffect(() => {
-    error && setSelectedDayTime([]);
+    error ? setErrorDay(true) : setErrorDay(false);
   }, [error]);
 
   return (
@@ -124,6 +126,7 @@ const RenderChooseTime = ({
                   readOnly={
                     error === "Close time must be greater than open time"
                   }
+                  disabled={disableDay}
                   error={!!errors.openHour}
                   slotProps={{
                     textField: {
@@ -185,7 +188,7 @@ const RenderChooseTime = ({
                       helperText: errors.closeHour ? "Time is required" : null,
                     },
                   }}
-                  disabled={!dayTime.openHour} // Disable closeHour if openHour don't have value
+                  disabled={!dayTime.openHour || disableDay} // Disable closeHour if openHour don't have value
                 />
               )}
             />

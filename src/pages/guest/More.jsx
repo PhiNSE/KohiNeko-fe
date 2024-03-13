@@ -1,30 +1,35 @@
 import { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-
-function getSteps() {
-  return ['Email', 'Send OTP', 'Verify OTP', 'Change Password'];
-}
+import FilterLocation from '../../components/FilterLocation';
+import { useCatByShop } from '../../hooks/useCatByShop';
 
 const More = () => {
-  const [otp, setOtp] = useState('');
-
-  const handleChange = (otp) => setOtp({ otp });
+  //* Get Cat By Shopid
+  const {
+    isLoading: isCatLoading,
+    cat,
+    error: catError,
+  } = useCatByShop('65edb684f9660adf5bafaeaf');
+  const catBreeds = cat?.data.map((cat) => {
+    const words = cat?.breed.split(' ');
+    return words[0];
+  });
+  const [selectedBreed, setSelectedBreed] = useState('All');
 
   return (
-    <div className='grid grid-cols-[1fr_4fr]'>
-      {/* Avatar + Usernames */}
-      <div className='flex flex-col bg-gray-200 justify-center items-center'>
-        <Avatar
-          alt='Remy Sharp'
-          src='https://via.placeholder.com/150'
-          sx={{ width: 80, height: 80 }}
-        />
-        <h1>Username</h1>
-      </div>
-      {/* Other info  */}
-      <div className='bg-orange-100 px-5 py-4'>
-        <h2 className='font-semibold'>User Profile</h2>
-      </div>
+    <div>
+      <label className='mr-2 text-sm font-bold'>Filter by Cat Breed:</label>
+      <select
+        value={selectedBreed}
+        onChange={(e) => setSelectedBreed(e.target.value)}
+        className='text-lg px-3 py-2 border border-gray-300 rounded-sm bg-gray-100 font-semibold shadow-sm w-[8rem] h-[3rem]'
+      >
+        <option value='All'>All</option>
+        {catBreeds?.map((breed) => (
+          <option key={breed} value={breed}>
+            {breed}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

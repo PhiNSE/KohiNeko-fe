@@ -39,6 +39,7 @@ import {
   assignStaffToArea,
   deleteStaff,
   getStaffsByShop,
+  searchStaff,
 } from "../../../services/apiStaff";
 import AddStaff from "./AddStaff";
 import EmptyBox from "../../../assets/empty_box.png";
@@ -131,6 +132,7 @@ const Staff = () => {
   const CreateStaff = useMutation({ mutationFn: addStaff });
   const AssignStaffToArea = useMutation({ mutationFn: assignStaffToArea });
   const DeleteStaff = useMutation({ mutationFn: deleteStaff });
+  const SearchStaff = useMutation({ mutationFn: searchStaff });
   const [showAddStaff, setShowAddStaff] = useState(false);
   const [showUpdateStaff, setShowUpdateStaff] = useState(false);
   const [showAssignArea, setShowAssignArea] = useState(false);
@@ -146,7 +148,7 @@ const Staff = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const open = Boolean(anchorEl);
-  const [searchBy, setSearchBy] = useState("name");
+  const [searchBy, setSearchBy] = useState("firstName");
   // this form is for search
   const {
     register: register1,
@@ -192,16 +194,19 @@ const Staff = () => {
   }, [selectedStaff, reset4]);
 
   useEffect(() => {
-    console.log(searchBy, keyword);
-    // const fetchData = async () => {
-    //   const response = await SearchManager.mutateAsync([keyword, searchBy]);
-    //   if (response.status === 200) {
-    //     setTable(response.data);
-    //   } else {
-    //     toastError(response.message);
-    //   }
-    // };
-    // fetchData();
+    const fetchData = async () => {
+      const response = await SearchStaff.mutateAsync([
+        coffeeShopId,
+        keyword,
+        searchBy,
+      ]);
+      if (response.status === 200) {
+        setStaff(response.data);
+      } else {
+        console.log(response.message);
+      }
+    };
+    fetchData();
   }, [keyword]);
 
   useEffect(() => {
@@ -221,6 +226,7 @@ const Staff = () => {
 
   if (isLoading) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
+  const highlightedData = {searchBy: searchBy, keyword: keyword};
 
   const tableData = eliminateUnnecessaryKeys(
     ((staff ?? []).length === 0
@@ -229,7 +235,6 @@ const Staff = () => {
         : filteredStaffs
       : staff) || []
   );
-  console.log(tableData);
   // const tableData = eliminateUnnecessaryKeys(data);
   const headData = extractKeys(tableData || []);
 
@@ -575,6 +580,7 @@ const Staff = () => {
                 tableData={tableData}
                 selectedData={selectedStaff}
                 setSelectedData={setSelectedStaff}
+                highlightedData={highlightedData}
               />
             )}
           </div>

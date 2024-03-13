@@ -39,6 +39,7 @@ import {
   assignCatToArea,
   deleteCat,
   getCatByShop,
+  searchCat,
   updateCat,
 } from "../../../services/apiCat";
 import UpdateCat from "./UpdateCat";
@@ -54,6 +55,7 @@ import { createCatImage, deleteCatImage } from "../../../services/apiImage";
 import { DateTimeFormater } from "../../../utils/DateFormater";
 import AssignCat from "./AssignCat";
 import FilterList from "../../../components/FilterList";
+import FilterCatBreed from "../../../components/FilterCatBreed";
 import { getAreaById } from "../../../services/apiArea";
 
 const eliminateUnnecessaryKeys = (data) => {
@@ -120,9 +122,9 @@ const extractKeys = (data) => {
   }
   return headTable;
 };
-
-const filterData = [{ status: ["active", "inactive"] }];
 const Cat = () => {
+  const [selectedBreed, setSelectedBreed] = useState("All");
+
   const { coffeeShopId } = useContext(ManagerContext);
   const {
     isLoading,
@@ -133,12 +135,32 @@ const Cat = () => {
     queryKey: ["cats", coffeeShopId],
     queryFn: () => getCatByShop(coffeeShopId),
   });
+  let breeds = [];
+  // if (cats) {
+  //   breeds = cats.map((cat) => cat.breed);
+  // }
+
+  useEffect(() => {
+    if (cats) {
+      console.log(cats);
+
+      cats?.data?.map((cat) => {
+        if (!breeds.includes(cat.breed)) {
+          breeds.push(cat.breed);
+        }
+      });
+    }
+  }, [cats, breeds]);
+
+  const filterData = [{ status: ["active", "inactive"] }, { breed: breeds }];
+
   const CreateCat = useMutation({ mutationFn: addCat });
   const CreateCatImage = useMutation({ mutationFn: createCatImage });
   const AssignCatToArea = useMutation({ mutationFn: assignCatToArea });
   const UpdateCatInfo = useMutation({ mutationFn: updateCat });
   const DeleteCat = useMutation({ mutationFn: deleteCat });
   const DeleteCatImage = useMutation({ mutationFn: deleteCatImage });
+  const SearchCat = useMutation({ mutationFn: searchCat });
   const [showAddCat, setShowAddCat] = useState(false);
   const [showUpdateCat, setShowUpdateCat] = useState(false);
   const [showAssignArea, setShowAssignArea] = useState(false);
@@ -199,33 +221,45 @@ const Cat = () => {
     reset4(selectedCat);
   }, [selectedCat, reset4]);
 
-  useEffect(() => {
-    console.log(searchBy, keyword);
-    // const fetchData = async () => {
-    //   const response = await SearchManager.mutateAsync([keyword, searchBy]);
-    //   if (response.status === 200) {
-    //     setTable(response.data);
-    //   } else {
-    //     toastError(response.message);
-    //   }
-    // };
-    // fetchData();
-  }, [keyword]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await SearchCat.mutateAsync([
+  //       coffeeShopId,
+  //       keyword,
+  //       searchBy,
+  //     ]);
+  //     if (response.status === 200) {
+  //       setCat(response.data);
+  //     } else {
+  //       console.log(response.message);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [keyword]);
 
   useEffect(() => {
-    setFilteredCats(
-      cats?.data?.filter((cat) => {
+    let filteredCats = cats?.data;
+
+    // Apply keyword filter
+    if (keyword) {
+      filteredCats = filteredCats.filter((cat) => cat.name.includes(keyword));
+    }
+
+    // Apply filter object
+    if (filter) {
+      filteredCats = filteredCats.filter((cat) => {
         for (const key in filter) {
           if (filter[key].length > 0) {
             if (filter[key] === cat[key]) {
-              return cat;
+              return true;
             }
           }
         }
-      })
-    );
-  }, [filter]);
-
+        return false;
+      });
+    }
+    setCat(filteredCats);
+  }, [keyword, filter, cats]);
   // useEffect(() => {
   //   if (selectedCat && Object.keys(selectedCat).length !== 0) {
   //     // if (action === "update") {
@@ -239,11 +273,16 @@ const Cat = () => {
 
   if (isLoading) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
+  const highlightedData = { searchBy: searchBy, keyword: keyword };
 
   const tableData = eliminateUnnecessaryKeys(
-    ((cat ?? []).length === 0 ? ((filteredCats ?? []).length === 0 ? cats?.data || [] : filteredCats) : cat) || []
+    ((cat ?? []).length === 0
+      ? (filteredCats ?? []).length === 0
+        ? cats?.data || []
+        : filteredCats
+      : cat) || []
   );
-  // const tableData = eliminateUnnecessaryKeys(data);
+  // const tableData = eliminateUnnecessaryKeys(cats?.data || []);
   const headData = extractKeys(tableData || []);
 
   const totalActiveCats = cats.data?.reduce((sum, cat) => {
@@ -519,10 +558,7 @@ const Cat = () => {
       ]);
       if (response.status === 200) {
         toastSuccess("Update Cat status successfully");
-        setSelectedCat((prevState) => ({
-          ...prevState,
-          status: prevState.status === "active" ? "inactive" : "active",
-        }));
+        setSelectedCat({});
         refetch();
       } else {
         toastError(response.message);
@@ -753,6 +789,7 @@ const Cat = () => {
               )}
             </div>
           </div>
+
           {cats.data?.length > 0 && (
             <div className="m-4">
               <form>
@@ -780,12 +817,12 @@ const Cat = () => {
                     />
                     <div
                       onClick={handleClick}
-                      className={`transform transition-transform duration-300 ${
-                        openModal ? "rotate-180" : ""
-                      }`}
+                      className={`transform transition-transform duration-300 ${openModal ? "rotate-180" : ""
+                        }`}
                     >
                       <HiChevronDown size="2rem" />
                     </div>
+
                     <Menu
                       id="basic-menu"
                       anchorEl={anchorEl}
@@ -812,7 +849,17 @@ const Cat = () => {
                       </MenuItem>
                     </Menu>
                   </Paper>
-                  <FilterList filterData={filterData} setValue={setValue1} />
+                  <div className="flex flex-row mr-4 gap-x-14">
+                    {/* <div>
+                      <span>Breed: </span>
+                      <FilterCatBreed
+                        cat={cats}
+                        selectedBreed={selectedBreed}
+                        setSelectedBreed={setSelectedBreed}
+                      />
+                    </div> */}
+                    <FilterList filterData={filterData} setValue={setValue1} />
+                  </div>
                 </div>
               </form>
             </div>
@@ -821,9 +868,14 @@ const Cat = () => {
             {cats.data && cats.data.length > 0 && (
               <CustomDataTable
                 headData={headData}
-                tableData={tableData}
+                tableData={tableData.filter(
+                  (cat) =>
+                    selectedBreed === "All" ||
+                    cat.breed.split(" ")[0] === selectedBreed
+                )}
                 selectedData={selectedCat}
                 setSelectedData={setSelectedCat}
+                highlightedData={highlightedData}
               />
             )}
           </div>

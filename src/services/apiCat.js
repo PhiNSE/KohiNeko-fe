@@ -20,7 +20,27 @@ export async function get1Cat([coffeeShopId, catId]) {
 
   const options = {
     method: "GET",
-    headers: {Authorization: token, "Content-Type": `application/json`},
+    headers: { Authorization: token, "Content-Type": `application/json` },
+    params: {},
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
+
+export async function searchCat([coffeeShopId, keyword, searchBy]) {
+  const params = {};
+  params[searchBy] = keyword;
+  const url = `/coffeeShops/${coffeeShopId}/cats/search?${new URLSearchParams(
+    params
+  ).toString()}`;
+  // const url = `/coffeeShops/${coffeeShopId}/cats/search?keyword=${keyword}`
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token, "Content-Type": `application/json` },
     params: {},
   };
 
@@ -103,6 +123,21 @@ export async function assignCatToArea([areaId, catId, startTime, endTime]) {
     headers: { Authorization: token, "Content-Type": `application/json` },
     params: "",
     body: JSON.stringify({ areaId, catId, startTime, endTime }),
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
+
+export async function adminGetCat() {
+  const url = `/areaCats`;
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token, "Content-Type": `application/json` },
+    params: {},
   };
 
   const response = await fetch(DEFAULT_API_URL + url, options);

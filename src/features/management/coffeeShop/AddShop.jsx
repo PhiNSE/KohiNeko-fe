@@ -15,6 +15,7 @@ import L from "leaflet";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import SearchMap from "./SearchMap";
+import { set } from "react-hook-form";
 
 const daysOfWeek = [
   "Monday",
@@ -54,6 +55,7 @@ const AddShop = ({
   const [key5, setKey5] = useState(0);
   const [key6, setKey6] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [errorDay, setErrorDay] = useState(false);
 
   // reset form after submit
   useEffect(() => {
@@ -140,7 +142,8 @@ const AddShop = ({
     const isFormFilled =
       images.filter((image) => image !== undefined).length >= 1 &&
       ((checked === false && selectedDayTime.length === 1) ||
-        (checked === true && selectedDayTime.length === 7)) &&
+        (checked === true && selectedDayTime.length > 0)) &&
+        errorDay === false &&
       shopName !== "" &&
       phone !== "" &&
       addressData &&
@@ -154,6 +157,7 @@ const AddShop = ({
     watch,
     checked,
     shopName,
+    errorDay,
     phone,
     email,
     addressData,
@@ -262,6 +266,7 @@ const AddShop = ({
                       errors={errors}
                       selectedDayTime={selectedDayTime}
                       setSelectedDayTime={setSelectedDayTime}
+                      setErrorDay={setErrorDay}
                     />
                   </div>
                 </>
@@ -279,6 +284,7 @@ const AddShop = ({
                           selectedDayTime={selectedDayTime}
                           setSelectedDayTime={setSelectedDayTime}
                           day={day}
+                          setErrorDay={setErrorDay}
                         />
                       </div>
                     </div>

@@ -84,7 +84,7 @@ const RenderItems = ({ data, handleChooseItem }) => {
           )}
         </Grid>
         {/* Pagination */}
-        {data.length > 0 && (
+        {data.length > 4 && (
           <PaginationCustom
             count={Math.ceil(data.length / 4)}
             page={currentPage}

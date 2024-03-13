@@ -1,18 +1,18 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getBooking } from "../../services/apiBooking";
-import Loader from "../../components/Loader";
+import { getBooking } from "../../../services/apiBooking";
+import Loader from "../../../components/Loader";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import FormatNumber from "../../utils/NumberFormatter";
+import FormatNumber from "../../../utils/NumberFormatter";
 import BookingInfo from "./BookingInfo";
 import CartStatic from "./CartStatic";
 import { SlArrowLeftCircle } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 import { orange } from "@mui/material/colors";
-import { toastError, toastSuccess } from "../../components/Toast";
-import { sendVnPayMessage } from "../../services/apiInvoice";
+import { toastError, toastSuccess } from "../../../components/Toast";
+import { sendVnPayMessage } from "../../../services/apiInvoice";
 
 const MyBookingDetail = () => {
   const { bookingId } = useParams();
@@ -90,7 +90,7 @@ const MyBookingDetail = () => {
       <div className="absolute top-2 left-56">
         <SlArrowLeftCircle
           size={50}
-          onClick={() => navigate(`/staff/booking`)}
+          onClick={() => navigate(`/management/booking`)}
           style={{ cursor: "pointer", transition: "0.3s", color: "black" }}
           onMouseOver={(e) => (e.currentTarget.style.color = "white")}
           onMouseOut={(e) => (e.currentTarget.style.color = "black")}

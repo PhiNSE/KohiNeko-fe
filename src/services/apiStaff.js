@@ -14,6 +14,25 @@ export async function getStaffsByShop(shopId) {
   return data;
 }
 
+export async function searchStaff([coffeeShopId, keyword, searchBy]) {
+  const params = {};
+  params[searchBy] = keyword;
+  const url = `/coffeeShops/${coffeeShopId}/staffs/search?${new URLSearchParams(
+    params
+  ).toString()}`;
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token, "Content-Type": `application/json` },
+    params: {},
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
+
 export async function addStaff([shopId, staff]) {
   const url = `/coffeeShops/${shopId}/staffs`;
   const token = localStorage.getItem("Authorization");

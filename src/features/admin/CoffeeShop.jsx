@@ -33,11 +33,13 @@ const CoffeeShop = () => {
   if (isLoading) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
 
-  const handleChangeStatus = async (id) => {
+  const handleChangeStatus = async (id, isApprove) => {
     try {
-      const response = await ApproveShop.mutateAsync(id);
+      const response = await ApproveShop.mutateAsync([id, isApprove]);
       if (response.status === 200) {
-        toastSuccess("Approve Shop successfully");
+        isApprove
+          ? toastSuccess("Approve Shop successfully")
+          : toastSuccess("Disapprove Shop successfully");
         refetch();
       } else {
         toastError(response.message);
@@ -201,7 +203,7 @@ const CoffeeShop = () => {
                       backgroundColor: "darkgreen",
                     },
                   }}
-                  onClick={() => handleChangeStatus(shop._id)}
+                  onClick={() => handleChangeStatus(shop._id, true)}
                 >
                   Approve
                 </Button>
@@ -215,7 +217,7 @@ const CoffeeShop = () => {
                       backgroundColor: "darkred",
                     },
                   }}
-                  onClick={() => handleChangeStatus(shop._id)}
+                  onClick={() => handleChangeStatus(shop._id, false)}
                 >
                   Disapprove
                 </Button>

@@ -2,16 +2,18 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getBooking } from "../../../services/apiBooking";
 import Loader from "../../../components/Loader";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import FormatNumber from "./../../../utils/NumberFormatter";
 import BookingInfo from "./BookingInfo";
 import CartStatic from "./CartStatic";
 import Items from "../../purchase/Items";
-import Button from "./../../../components/Button";
+
+import { HiOutlineChevronRight } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 const MyBookingDetail = () => {
   const { bookingId } = useParams();
-
+  const navigate = useNavigate();
   const {
     data: booking,
     isLoading,
@@ -34,6 +36,16 @@ const MyBookingDetail = () => {
   return (
     <>
       <div className="mx-4 my-6">
+        <div className='mb-2'>
+          <Button
+            variant="outlined"
+            color="warning"
+            endIcon={<HiOutlineChevronRight />}
+            onClick={() => navigate("/booking/history")}
+          >
+            Back to booking history
+          </Button>
+        </div>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             {/* Booking info */}
@@ -45,8 +57,8 @@ const MyBookingDetail = () => {
               {/* <Items items={items} coffeeShopId={CoffeeShop._id} /> */}
               <CartStatic
                 selectedItems={booking.data.invoices}
-                // setSelectedItems={setSelectedItems}
-                // handleUpdateItem={handleUpdateItem}
+              // setSelectedItems={setSelectedItems}
+              // handleUpdateItem={handleUpdateItem}
               />
               <br />
               <hr />
@@ -84,7 +96,7 @@ const MyBookingDetail = () => {
                   )}{" "} */}
                   {FormatNumber(
                     booking.data.price +
-                      calculateTotalPrice(booking.data.invoices)
+                    calculateTotalPrice(booking.data.invoices)
                   )}{" "}
                   VND
                 </Typography>

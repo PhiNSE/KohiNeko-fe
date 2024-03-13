@@ -31,9 +31,11 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import Card from "../../components/Card";
 import { useAllShop } from "../../hooks/useAllShop";
 import { useEffect } from "react";
+import FilterCatBreed from "../../components/FilterCatBreed";
 const ShopDetails = () => {
   const navigate = useNavigate();
   const { shopId } = useParams();
+  const [selectedBreed, setSelectedBreed] = useState("All");
 
   //* Tab
   const [tabValue, setTabValue] = useState(0);
@@ -46,6 +48,10 @@ const ShopDetails = () => {
   const handlePageChange = useCallback((value) => {
     setCurrentPage(value);
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(0); // reset to the first page whenever the filter changes
+  }, [selectedBreed]);
 
   //* Get Shop Detail
   const { isLoading: isShopLoading, shop, error: shopError } = useShop(shopId);
@@ -111,7 +117,10 @@ const ShopDetails = () => {
   const user = JSON.parse(localStorage.getItem("user")) || null;
   const handleBookNow = () => {
     if (!user) {
-      localStorage.setItem("redirectAfterLogin", `/coffeeShops/${shopId}`);
+      localStorage.setItem(
+        "redirectAfterLogin",
+        `/coffeeShops/${shopId}/booking`
+      );
       navigate("/login", { replace: true });
     } else {
       navigate(`/coffeeShops/${shopId}/booking`);
@@ -338,29 +347,75 @@ const ShopDetails = () => {
               {/* Cat Tab */}
               {tabValue === 0 && (
                 <>
+                  {cat.data.length > 0 && (
+                    <div className="flex justify-end items-center pb-4 mr-5">
+                      <FilterCatBreed
+                        cat={cat}
+                        selectedBreed={selectedBreed}
+                        setSelectedBreed={setSelectedBreed}
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-x-2 gap-y-4 px-3">
                     {cat.data.length > 0 &&
                       cat.data
+                        .filter(
+                          (cat) =>
+                            selectedBreed === "All" ||
+                            cat.breed === selectedBreed
+                        )
+                        .sort((a, b) =>
+                          a.status === "inactive" && b.status !== "inactive"
+                            ? 1
+                            : -1
+                        )
                         .slice(currentPage * 4, (currentPage + 1) * 4)
-                        .map((cat, index) => (
-                          <CatList
-                            key={index}
-                            shopId={shopId}
-                            catId={cat._id}
-                            img={cat.images[0]?.url}
-                            catName={cat.name}
-                            catGender={cat.gender}
-                            catKind={cat.breed}
-                          />
-                        ))}
+                        .map((cat, index) =>
+                          cat.status === "inactive" ? (
+                            <div
+                              className="grayscale-50 pointer-events-none opacity-65"
+                              key={index}
+                            >
+                              <CatList
+                                key={index}
+                                shopId={shopId}
+                                catId={cat._id}
+                                img={cat.images[0]?.url}
+                                catName={cat.name}
+                                catGender={cat.gender}
+                                catKind={cat.breed}
+                              />
+                            </div>
+                          ) : (
+                            <CatList
+                              key={index}
+                              shopId={shopId}
+                              catId={cat._id}
+                              img={cat.images[0]?.url}
+                              catName={cat.name}
+                              catGender={cat.gender}
+                              catKind={cat.breed}
+                            />
+                          )
+                        )}
                   </div>
 
                   {cat.data.length === 0 && <Empty object="cats" />}
 
                   {/* Pagination */}
-                  {cat.data.length > 4 && ( // Change this line
+                  {cat.data.filter(
+                    (cat) =>
+                      selectedBreed === "All" ||
+                      cat.breed.split(" ")[0] === selectedBreed
+                  ).length > 4 && (
                     <PaginationCustom
-                      count={Math.ceil(cat.data.length / 4)}
+                      count={Math.ceil(
+                        cat.data.filter(
+                          (cat) =>
+                            selectedBreed === "All" ||
+                            cat.breed.split(" ")[0] === selectedBreed
+                        ).length / 4
+                      )}
                       page={currentPage}
                       onPageChange={handlePageChange}
                     />

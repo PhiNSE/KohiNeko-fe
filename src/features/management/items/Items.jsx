@@ -39,6 +39,7 @@ import {
   createItem,
   deleteItem,
   getItemsInShop,
+  searchItem,
   updateItem,
 } from "../../../services/apiItems";
 import AddItem from "./AddItem";
@@ -113,6 +114,7 @@ const Items = () => {
   const UpdateItemInfo = useMutation({ mutationFn: updateItem });
   const DeleteItem = useMutation({ mutationFn: deleteItem });
   const DeleteItemImage = useMutation({ mutationFn: deleteItemImage });
+  const SearchItem = useMutation({ mutationFn: searchItem });
   const [showAddItem, setShowAddItem] = useState(false);
   const [showUpdateItem, setShowUpdateItem] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
@@ -159,16 +161,24 @@ const Items = () => {
   }, [selectedItem, reset3]);
 
   useEffect(() => {
-    console.log(searchBy, keyword);
-    // const fetchData = async () => {
-    //   const response = await SearchManager.mutateAsync([keyword, searchBy]);
-    //   if (response.status === 200) {
-    //     setTable(response.data);
-    //   } else {
-    //     toastError(response.message);
-    //   }
-    // };
-    // fetchData();
+    const fetchData = async () => {
+      if (keyword === "") {
+        setItem([]);
+      }
+      if (keyword) {
+        const response = await SearchItem.mutateAsync([
+          coffeeShopId,
+          keyword,
+          searchBy,
+        ]);
+        if (response.status === 200) {
+          setItem(response.data);
+        } else {
+          console.log(response.message);
+        }
+      }
+    };
+    fetchData();
   }, [keyword]);
 
   useEffect(() => {
@@ -200,9 +210,14 @@ const Items = () => {
 
   if (isLoading) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
+  const highlightedData = { searchBy: searchBy, keyword: keyword };
 
   const tableData = eliminateUnnecessaryKeys(
-    ((item ?? []).length === 0 ? ((filteredItems ?? []).length === 0 ? items?.data?.items || [] : filteredItems) : item) || []
+    ((item ?? []).length === 0
+      ? (filteredItems ?? []).length === 0
+        ? items?.data?.items || []
+        : filteredItems
+      : item) || []
   );
   const headData = extractKeys(tableData || []);
 
@@ -401,6 +416,7 @@ const Items = () => {
       ]);
       if (response.status === 200) {
         toastSuccess("Update item status successfully");
+        setSelectedItem({});
         refetch();
       } else {
         toastError(response.message);
@@ -621,6 +637,7 @@ const Items = () => {
                 tableData={tableData}
                 selectedData={selectedItem}
                 setSelectedData={setSelectedItem}
+                highlightedData={highlightedData}
               />
             )}
           </div>

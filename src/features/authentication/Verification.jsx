@@ -45,8 +45,8 @@ const Verification = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [openExist, setOpenExist] = useState(false);
-  const [showPassword, setShowPassword] = useState(true);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formEmail, setFormEmail] = useState('');
   const {
@@ -62,6 +62,8 @@ const Verification = () => {
       email: formEmail || '',
     },
   });
+  console.log(getValues('password'));
+  console.log(getValues('passwordConfirm'));
 
   const emailValue = watch('email');
 
@@ -71,6 +73,7 @@ const Verification = () => {
     console.log(data);
     try {
       const response = await signUp.mutateAsync(data);
+      console.log(response);
       if (response.status === 201 || response.status === 200) {
         console.log(response);
         const accessToken = response.data.accessToken;
@@ -138,6 +141,7 @@ const Verification = () => {
     setIsLoading(true);
     try {
       const response = await verifyOTP(email, otp);
+
       if (response.status === 200) {
         setValue('email', email);
         toastSuccess('Verify successfully');
@@ -494,9 +498,9 @@ const Verification = () => {
                               onClick={() => setShowPassword(!showPassword)}
                             >
                               {showPassword ? (
-                                <HiOutlineEyeSlash />
-                              ) : (
                                 <HiOutlineEye />
+                              ) : (
+                                <HiOutlineEyeSlash />
                               )}
                             </div>
                           ),
@@ -529,9 +533,9 @@ const Verification = () => {
                               }
                             >
                               {showConfirmPassword ? (
-                                <HiOutlineEyeSlash />
-                              ) : (
                                 <HiOutlineEye />
+                              ) : (
+                                <HiOutlineEyeSlash />
                               )}
                             </div>
                           ),

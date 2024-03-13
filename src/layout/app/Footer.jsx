@@ -46,7 +46,7 @@ const Footer = () => {
             </Link>
             <div className='text-secondary text-xl md:text-3xl flex flex-row gap-3  mt-3'>
               <a
-                href='hAAttps://www.facebook.com/thecatcafesandiego'
+                href='https://www.facebook.com/thecatcafesandiego'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='footer-links'

@@ -13,6 +13,21 @@ export async function getAllPackages() {
   const data = await response.json();
   return data;
 }
+
+export async function getPackageByShop() {
+  const url = `/packageSubscriptions/coffeeShop/current`;
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token },
+    params: {},
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
 export async function subscribePackage(pkc) {
   const url = `/packageSubscriptions`;
 

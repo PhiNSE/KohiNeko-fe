@@ -98,32 +98,6 @@ const Items = () => {
             <Tab value={4} label='Cat Toy' />
           </Tabs>
         </Box>
-        {/* Search form */}
-        <div className='p-2 w-fit bg-gray-100'>
-          <form
-            onSubmit={handleSubmit1((data) => {
-              console.log(data);
-            })}
-          >
-            <Paper
-              sx={{
-                p: '2px 4px',
-                display: 'flex',
-                alignItems: 'center',
-                width: 400,
-              }}
-            >
-              <IconButton type='button' sx={{ p: '10px' }} aria-label='search'>
-                <HiOutlineSearch />
-              </IconButton>
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder='Search'
-                {...register1('keyword')}
-              />
-            </Paper>
-          </form>
-        </div>
       </div>
       <Grid container sx={{ mt: 2 }}>
         <Grid item xs={12} md={7}>

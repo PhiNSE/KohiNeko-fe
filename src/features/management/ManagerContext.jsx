@@ -14,14 +14,16 @@ const ManagerProvider = ({ children }) => {
     error,
   } = useQuery({
     queryKey: ["shop"],
-    queryFn: getShopByUserId,
+    queryFn: () => getShopByUserId(),
   });
   const [coffeeShopId, setCoffeeShopId] = useState();
 
   useEffect(() => {
     setCoffeeShopId(coffeeShop?.data ? coffeeShop?.data._id : "");
+    console.log(coffeeShop?.data?._id, "coffeeShop?.data?._id");
+    console.log(coffeeShop);
   }, [coffeeShop]);
-  
+
   if (isLoading) return <Loader />;
   if (error) return <p>error</p>;
   return (

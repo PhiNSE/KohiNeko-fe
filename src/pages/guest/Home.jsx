@@ -88,7 +88,7 @@ const Home = () => {
             non-profit organization dedicated to helping homeless kitties find
             loving homes.
           </p>
-          <Button type='large' levelType='secondary' to='/about'>
+          <Button type='large' levelType='secondary' to='/about/origin'>
             Learn more
           </Button>
         </div>

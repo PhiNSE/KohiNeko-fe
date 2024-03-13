@@ -28,6 +28,26 @@ export async function getAllItemTypes() {
   return data;
 }
 
+export async function searchItem([coffeeShopId, keyword, searchBy]) {
+  const params = {};
+  params[searchBy] = keyword;
+  const url = `/items/search/coffeeShops/${coffeeShopId}?${new URLSearchParams(
+    params
+  ).toString()}`;
+  // const url = `/coffeeShops/${coffeeShopId}/cats/search?keyword=${keyword}`
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token, "Content-Type": `application/json` },
+    params: {},
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
+
 export async function createItem([shopId, item]) {
   const url = `/coffeeShops/${shopId}/items`;
   const token = localStorage.getItem("Authorization");

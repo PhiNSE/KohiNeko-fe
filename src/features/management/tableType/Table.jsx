@@ -31,13 +31,6 @@ import { useState, useEffect, useContext } from "react";
 import CustomDataTable from "../../../components/CustomDataTable";
 import CustomDrawer from "../../../components/CustomDrawer";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  addCat,
-  assignCatToArea,
-  deleteCat,
-  getCatByShop,
-  updateCat,
-} from "../../../services/apiCat";
 import Loader from "../../../components/Loader";
 import EmptyBox from "../../../assets/empty_box.png";
 import { ManagerContext } from "../ManagerContext";
@@ -52,6 +45,7 @@ import {
   addTableType,
   deleteTableType,
   getTableTypesInShop,
+  searchTable,
   updateTableType,
 } from "../../../services/apiTable";
 import AddTable from "./AddTable";
@@ -117,10 +111,12 @@ const Table = () => {
   //   const AssignCatToArea = useMutation({ mutationFn: assignCatToArea });
   const UpdateTableInfo = useMutation({ mutationFn: updateTableType });
   const DeleteTable = useMutation({ mutationFn: deleteTableType });
+  const SearchTable = useMutation({ mutationFn: searchTable });
   const [showAddTable, setShowAddTable] = useState(false);
   const [showUpdateTable, setShowUpdateTable] = useState(false);
   const [showAssignArea, setShowAssignArea] = useState(false);
   const [selectedTable, setSelectedTable] = useState({});
+  const [filteredTables, setFilteredTables] = useState([]);
   const [openPopUp, setOpenPopUp] = useState(false);
   const [isAddFormFilled, setIsAddFormFilled] = useState(false);
   const [isUpdateFormFilled, setIsUpdateFormFilled] = useState(false);
@@ -173,23 +169,37 @@ const Table = () => {
     reset4(selectedTable);
   }, [selectedTable, reset4]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await SearchManager.mutateAsync([keyword, searchBy]);
-  //     if (response.status === 200) {
-  //       setTable(response.data);
-  //     } else {
-  //       toastError(response.message);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [keyword]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (keyword === "") {
+        setTable([]);
+      }
+      if (keyword) {
+        const response = await SearchTable.mutateAsync([
+          coffeeShopId,
+          keyword,
+          searchBy,
+        ]);
+        if (response.status === 200) {
+          setTable(response.data);
+        } else {
+          toastError(response.message);
+        }
+      }
+    };
+    fetchData();
+  }, [keyword]);
 
   if (isLoading) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
+  const highlightedData = { searchBy: searchBy, keyword: keyword };
 
   const tableData = eliminateUnnecessaryKeys(
-    table.length === 0 ? tables.data || [] : table
+    ((table ?? []).length === 0
+      ? (filteredTables ?? []).length === 0
+        ? tables?.data || []
+        : filteredTables
+      : table) || []
   );
   // const tableData = eliminateUnnecessaryKeys(data);
   const headData = extractKeys(tableData || []);
@@ -527,9 +537,9 @@ const Table = () => {
                     <MenuItem onClick={() => handleClose("name")}>
                       Name
                     </MenuItem>
-                    <MenuItem onClick={() => handleClose("price")}>
+                    {/* <MenuItem onClick={() => handleClose("price")}>
                       Price
-                    </MenuItem>
+                    </MenuItem> */}
                   </Menu>
                 </Paper>
               </form>
@@ -542,6 +552,7 @@ const Table = () => {
                 tableData={tableData}
                 selectedData={selectedTable}
                 setSelectedData={setSelectedTable}
+                highlightedData={highlightedData}
               />
             )}
           </div>

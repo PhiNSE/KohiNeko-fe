@@ -63,6 +63,8 @@ const UpdateShop = ({
   const [key5, setKey5] = useState(30);
   const [key6, setKey6] = useState(40);
   const [checked, setChecked] = useState(false);
+  const [errorDay, setErrorDay] = useState(false);
+  const [disableDay, setDisableDay] = useState("");
 
   // useEffect(() => {
   //   let allEqual = true;
@@ -79,24 +81,10 @@ const UpdateShop = ({
   // }, [selectedDayTime]);
 
   useEffect(() => {
-    if (selectedDayTime.length !== 0) {
-      if (checked === false) {
-        if (selectedDayTime.length === 1) {
-          setValue("openTime", selectedDayTime);
-        } else {
-          setValue("openTime", selectedDayTime);
-        }
-      } else {
-        if (selectedDayTime.length === 7) {
-          setValue("openTime", selectedDayTime);
-        }
-      }
+    if (selectedDayTime.length > 0) {
+      setValue("openTime", selectedDayTime);
     }
-    // else {
-    // console.log(openTime);
-    // setValue("openTime", openTime);
-    // }
-  }, [selectedDayTime, checked, setValue]);
+  }, [selectedDayTime, setValue]);
 
   useEffect(() => {
     setValue("phone", phone);
@@ -159,10 +147,8 @@ const UpdateShop = ({
   useEffect(() => {
     const isFormFilled =
       images.filter((image) => image !== undefined).length >= 1 &&
-      (selectedDayTime.length === 1 ||
-        // openTime.length === 1 ||
-        selectedDayTime.length === 7) &&
-      // openTime.length === 7
+      selectedDayTime.length > 0 &&
+      errorDay === false &&
       shopName !== "" &&
       phone !== "" &&
       addressData &&
@@ -173,7 +159,7 @@ const UpdateShop = ({
   }, [
     images,
     selectedDayTime,
-    // openTime,
+    errorDay,
     watch,
     checked,
     shopName,
@@ -188,6 +174,34 @@ const UpdateShop = ({
   const handlePhoneChange = (event) => {
     const numericValue = event.target.value.replace(/\D/g, "");
     setPhone(numericValue);
+  };
+
+  const handleDisableDay = (idx) => {
+    // find the day in selectedDayTime that have the idx
+    const selectedDayTimeIndex = selectedDayTime.findIndex(
+      (item) => item.day === daysOfWeek[idx]
+    );
+    if (selectedDayTimeIndex !== -1) {
+      setSelectedDayTime((prev) => {
+        let newArr = [...prev];
+        newArr.splice(selectedDayTimeIndex, 1);
+        return newArr;
+      });
+    } 
+    else {
+      setSelectedDayTime((prev) => [
+        ...prev,
+        {
+          day: daysOfWeek[idx],
+          openHour: null,
+          closeHour: null,
+        },
+      ]);
+    }
+
+    const updatedDisableDay = [...disableDay];
+    updatedDisableDay[idx] = !updatedDisableDay[idx];
+    setDisableDay(updatedDisableDay);
   };
   return (
     <>
@@ -279,24 +293,23 @@ const UpdateShop = ({
               <Typography variant="h5" fontWeight="bold">
                 Set up open/close time
               </Typography>
-              {/* <FormControlLabel
-                label="Custom day"
-                control={
-                  <Switch
-                    color="primary"
-                    checked={checked}
-                    onChange={() => {
-                      setSelectedDayTime([]);
-                      setChecked(!checked);
-                    }}
-                  />
-                }
-              /> */}
               {daysOfWeek.map((day, idx) => (
                 <div key={idx}>
-                  <Typography variant="h6" sx={{ py: 1 }}>
-                    {day}
-                  </Typography>
+                  <div className="flex justify-between">
+                    <Typography variant="h6" sx={{ py: 1 }}>
+                      {day}
+                    </Typography>
+                    <FormControlLabel
+                      label="Disable this day"
+                      control={
+                        <Switch
+                          color="primary"
+                          checked={disableDay[idx]}
+                          onChange={() => handleDisableDay(idx)}
+                        />
+                      }
+                    />
+                  </div>
                   <div className=" flex items-center">
                     <RenderChooseTime
                       control={control}
@@ -304,7 +317,8 @@ const UpdateShop = ({
                       selectedDayTime={selectedDayTime}
                       setSelectedDayTime={setSelectedDayTime}
                       day={day}
-                      // openTime={openTime[idx]}
+                      disableDay={disableDay[idx]}
+                      setErrorDay={setErrorDay}
                     />
                   </div>
                 </div>

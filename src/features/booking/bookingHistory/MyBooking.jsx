@@ -108,6 +108,16 @@ const MyBooking = () => {
     setPage(newPage);
   };
 
+  const getTotalPrice = (booking) => {
+    let total = booking.price;
+    if (booking.invoices) {
+      const totalInvocie = booking.invoices.reduce((acc, item) => {
+        return acc + item.totalPrice;
+      }, 0);
+      total += totalInvocie;
+    }
+    return total;
+  };
   const handleSortDate = async () => {
     if (sortDate === "asc") {
       setSortDate("desc");
@@ -275,7 +285,9 @@ const MyBooking = () => {
                               hour12: false,
                             })}
                           </TableCell>
-                          <TableCell>{FormatNumber(row.price)}</TableCell>
+                          <TableCell>
+                            {FormatNumber(getTotalPrice(row))} VND
+                          </TableCell>
                           {/* <TableCell>{row.status}</TableCell> */}
                           <TableCell>
                             <Status name={row.status} />
@@ -296,18 +308,20 @@ const MyBooking = () => {
                               </NavLink>
                             </Tooltip>
                             <Tooltip title="Refund" placement="top">
-                              {row.status !== "refund" && (
-                                <IconButton
-                                  aria-label="delete"
-                                  onClick={() => handleOpenDialog(row)}
-                                  style={{
-                                    border: "0.5px solid red",
-                                    marginLeft: "5px",
-                                  }} // Add margin here
-                                >
-                                  <RiRefund2Fill size={15} color="red" />
-                                </IconButton>
-                              )}
+                              {row.status !== "refund" &&
+                                row.status !== "finished" &&
+                                row.status !== "in progress" && (
+                                  <IconButton
+                                    aria-label="delete"
+                                    onClick={() => handleOpenDialog(row)}
+                                    style={{
+                                      border: "0.5px solid red",
+                                      marginLeft: "5px",
+                                    }} // Add margin here
+                                  >
+                                    <RiRefund2Fill size={15} color="red" />
+                                  </IconButton>
+                                )}
                             </Tooltip>
                           </TableCell>
                         </TableRow>

@@ -15,20 +15,28 @@ export async function getAllShop() {
   return data;
 }
 
-export async function getShops(page, perPage, key) {
+export async function getShops(page, perPage, key, city, district) {
+  // console.log("getShops", page, perPage, key, city, district);
+  console.log("run");
+  if (city === undefined) city = "";
+  if (district === undefined) district = "";
   const response = await fetch(
-    `${DEFAULT_API_URL}/coffeeShops?page=${page}&perPage=${perPage}&key=${key}`
+    `${DEFAULT_API_URL}/coffeeShops?page=${page}&perPage=${perPage}&key=${key}&city=${encodeURIComponent(
+      city
+    )}&district=${encodeURIComponent(district)}`
   );
   const dataObj = await response.json();
+  console.log(response, dataObj);
   const shops = dataObj.data;
   const responseTotal = await fetch(
-    `${DEFAULT_API_URL}/coffeeShops/total/count?keyword=${key}`
+    `${DEFAULT_API_URL}/coffeeShops/total/count?keyword=${key}&city=${encodeURIComponent(
+      city
+    )}&district=${encodeURIComponent(district)}`
   );
   const dataTotal = await responseTotal.json();
   const total = dataTotal.data;
   return { shops, total };
 }
-
 export async function getShopByAdmin() {
   const url = "/admin/coffeeShops";
   const token = localStorage.getItem("Authorization");
@@ -43,14 +51,14 @@ export async function getShopByAdmin() {
   return data;
 }
 
-export async function approveShop(shopId) {
+export async function approveShop([shopId, isApprove]) {
   const url = `/admin/coffeeShops/${shopId}`;
   const token = localStorage.getItem("Authorization");
 
   const options = {
     method: "PATCH",
     headers: { Authorization: token, "Content-Type": `application/json` },
-    body: JSON.stringify({ approve: true }),
+    body: JSON.stringify({ approve: isApprove }),
   };
   const response = await fetch(DEFAULT_API_URL + url, options);
 

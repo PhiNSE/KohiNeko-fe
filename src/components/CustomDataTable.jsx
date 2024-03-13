@@ -239,6 +239,24 @@ const RenderRow = ({ row, key, highlightedData }) => {
           </p>
         </TableCell>
       );
+    case "username":
+      return (
+        <TableCell align="left" key={key}>
+          <p className="text-lg font-semibold">
+            {highlightedData?.searchBy === key &&
+            row[key]
+              .toLowerCase()
+              .includes(highlightedData.keyword?.toLowerCase()) &&
+            highlightedData.keyword !== "" ? (
+              <span>
+                {getHighlightedText(row[key], highlightedData.keyword)}
+              </span>
+            ) : (
+              row[key]
+            )}
+          </p>
+        </TableCell>
+      );
     case "price":
       return (
         <TableCell align="left" key={key}>
@@ -265,7 +283,9 @@ const RenderRow = ({ row, key, highlightedData }) => {
         <TableCell align="left" key={key}>
           <p
             className={`text-lg rounded-lg p-1 text-center font-semibold capitalize ${
-              (row[key] === "active") || (row[key] === "available") ? "bg-lime-400" : "bg-red-500"
+              row[key] === "active" || row[key] === "available"
+                ? "bg-lime-400"
+                : "bg-red-500"
             }`}
           >
             {String(row[key])}

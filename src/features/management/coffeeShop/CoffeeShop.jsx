@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
   Stack,
   Typography,
 } from "@mui/material";
@@ -40,29 +41,25 @@ import { MdTableBar } from "react-icons/md";
 import { HiLocationMarker, HiMail, HiPencilAlt, HiPhone } from "react-icons/hi";
 import UpdateShop from "./UpdateShop";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { getPackageByShop } from "../../../services/apiPackage";
+import FormatNumber from "../../../utils/NumberFormatter";
+import { DateFormater, DateTimeFormater } from "../../../utils/DateFormater";
 
 const CoffeeShop = () => {
-  // const user = JSON.parse(localStorage.getItem("user"));
+  const { coffeeShopId, setCoffeeShopId } = useContext(ManagerContext);
   const { data: coffeeShop, refetch: refetchCoffeeShop } = useQuery({
     queryKey: ["shop"],
-    queryFn: getShopByUserId,
+    queryFn: () => getShopByUserId(),
   });
-  // const { data: packageSubscription, refetch: refetchPackage } = useQuery({
-  //   queryKey: ["package"],
-  //   queryFn: getShopByUserId,
-  // });
-  const { coffeeShopId, setCoffeeShopId } = useContext(ManagerContext);
+  const { data: packageSubscription, refetch: refetchPackage } = useQuery({
+    queryKey: ["packageSubscription"],
+    queryFn: () => getPackageByShop(),
+  });
   const [showAddShop, setShowAddShop] = useState(false);
   const [showUpdateShop, setShowUpdateShop] = useState(false);
-  // const [showAddArea, setShowAddArea] = useState(false);
-  // const [showUpdateArea, setShowUpdateArea] = useState(false);
-  const [openPopUp, setOpenPopUp] = useState(false);
   const [isAddShopFormFilled, setIsAddShopFormFilled] = useState(false);
   const [isUpdateShopFormFilled, setIsUpdateShopFormFilled] = useState(false);
   const [shop, setShop] = useState({});
-  // const [selectedArea, setSelectedArea] = useState({});
-  // const [isAddAreaFormFilled, setIsAddAreaFormFilled] = useState(false);
-  // const [isUpdateAreaFormFilled, setIsUpdateAreaFormFilled] = useState(false);
 
   // this is the form for add new shop
   const {
@@ -84,51 +81,13 @@ const CoffeeShop = () => {
     control: control4,
     formState: { errors: errors4 },
   } = useForm();
-  // // this form is for add area
-  // const {
-  //   register: register2,
-  //   handleSubmit: handleSubmit2,
-  //   reset: reset2,
-  //   setValue: setValue2,
-  //   watch: watch2,
-  // } = useForm();
-  // // this form is for update area
-  // const {
-  //   register: register3,
-  //   handleSubmit: handleSubmit3,
-  //   reset: reset3,
-  //   setValue: setValue3,
-  //   watch: watch3,
-  // } = useForm();
-
-  // useEffect(() => {
-  //   reset3(selectedArea);
-  // }, [selectedArea, reset3]);
   useEffect(() => {
     reset4(shop);
   }, [shop, reset4]);
-
-  // const {
-  //   isLoading,
-  //   error,
-  //   data: areas,
-  //   refetch: refetchAreas,
-  // } = useQuery({
-  //   queryKey: ["areas", coffeeShopId],
-  //   queryFn: () => getAreasInAShop(coffeeShopId),
-  // });
   const CreateShop = useMutation({ mutationFn: createShop });
   const CreateShopImage = useMutation({ mutationFn: createShopImage });
   const UpdateShopInfo = useMutation({ mutationFn: updateShop });
   const DeleteShopImage = useMutation({ mutationFn: deleteShopImage });
-  // const CreateArea = useMutation({ mutationFn: createArea });
-  // const CreateAreaImage = useMutation({ mutationFn: createAreaImage });
-  // const UpdateAreaInfo = useMutation({ mutationFn: updateArea });
-  // const DeleteArea = useMutation({ mutationFn: deleteArea });
-  // const DeleteAreaImage = useMutation({ mutationFn: deleteAreaImage });
-
-  // if (isLoading) return <Loader />;
-  // if (error) return <div>Error: {error.message}</div>;
 
   const {
     address,
@@ -139,7 +98,7 @@ const CoffeeShop = () => {
     phone,
     email,
     description: shopDescription,
-  } = coffeeShop.data || {};
+  } = coffeeShop?.data || {};
 
   const addressFull =
     address &&
@@ -266,8 +225,8 @@ const CoffeeShop = () => {
         }
       }
 
-      const newInfo = Object.keys(rest).filter((key) => {
-        return rest[key] !== coffeeShop.data[key];
+      const newInfo = Object.keys(payload).filter((key) => {
+        return payload[key] !== coffeeShop.data[key];
       });
       if (newInfo.length > 0) {
         const response = await UpdateShopInfo.mutateAsync([payload, _id]);
@@ -284,122 +243,6 @@ const CoffeeShop = () => {
       toastError(error.message);
     }
   };
-
-  // const addNewArea = async (data) => {
-  //   const { images, ...rest } = data;
-  //   const payload = {
-  //     ...rest,
-  //     coffeeShopId: coffeeShopId,
-  //   };
-  //   console.log(payload);
-  //   try {
-  //     const response = await CreateArea.mutateAsync([coffeeShopId, payload]);
-  //     if (response.status === 200) {
-  //       if (images.length > 0) {
-  //         const res = await CreateAreaImage.mutateAsync([
-  //           coffeeShopId,
-  //           response.data._id,
-  //           images,
-  //         ]);
-  //         if (res.status === 200) {
-  //           toastSuccess("Create area successfully!");
-  //           refetchAreas();
-  //         } else {
-  //           toastError(res.message);
-  //         }
-  //       }
-  //     } else {
-  //       toastError(response.message);
-  //     }
-  //   } catch (error) {
-  //     toastError(error.message);
-  //   }
-  // };
-
-  // const editArea = async (data) => {
-  //   const { _id, images, createdAt, isDeleted, updatedAt, __v, ...rest } = data;
-  //   console.log(rest);
-  //   try {
-  //     const filterImages = selectedArea.images.filter((image) =>
-  //       images.includes(image.url)
-  //     );
-  //     if (filterImages.length === 0) {
-  //       const res = await DeleteAreaImage.mutateAsync([
-  //         coffeeShopId,
-  //         selectedArea._id,
-  //         selectedArea.images[0]._id,
-  //       ]);
-  //       if (res.status === 200) {
-  //         console.log("Delete image successfully");
-  //       } else {
-  //         toastError(res.message);
-  //       }
-  //       if (images.length > 0) {
-  //         const res = await CreateAreaImage.mutateAsync([
-  //           coffeeShopId,
-  //           selectedArea._id,
-  //           images,
-  //         ]);
-  //         if (res.status === 200) {
-  //           console.log("Create image successfully");
-  //         } else {
-  //           toastError(res.message);
-  //         }
-  //       }
-  //     }
-  //     const newInfo = Object.keys(rest).filter((key) => {
-  //       return rest[key] !== selectedArea[key];
-  //     });
-  //     if (newInfo.length > 0) {
-  //       const response = await UpdateAreaInfo.mutateAsync([
-  //         rest,
-  //         coffeeShopId,
-  //         _id,
-  //       ]);
-  //       if (response.status === 200) {
-  //         console.log("Update area successfully");
-  //       } else {
-  //         toastError(response.message);
-  //       }
-  //     }
-  //     toastSuccess("Update area successfully");
-  //     refetchAreas();
-  //   } catch (error) {
-  //     toastError(error.message);
-  //   }
-  // };
-
-  // const deleteAreaInfo = async () => {
-  //   setOpenPopUp(false);
-  //   try {
-  //     if (selectedArea.images.length > 0) {
-  //       selectedArea.images.map(async (image) => {
-  //         const res = await DeleteAreaImage.mutateAsync([
-  //           coffeeShopId,
-  //           selectedArea._id,
-  //           image._id,
-  //         ]);
-  //         if (res.status === 200) {
-  //           console.log("Delete image successfully");
-  //         } else {
-  //           toastError(res.message);
-  //         }
-  //       });
-  //     }
-  //     const response = await DeleteArea.mutateAsync([
-  //       coffeeShopId,
-  //       selectedArea._id,
-  //     ]);
-  //     if (response.status === 200) {
-  //       toastSuccess("Delete Area successfully");
-  //       refetchAreas();
-  //     } else {
-  //       toastError(response.message);
-  //     }
-  //   } catch (error) {
-  //     toastError(error.message);
-  //   }
-  // };
   return (
     <div className="h-fit w-full">
       {coffeeShop.message === "User has no coffee shop" && (
@@ -417,7 +260,7 @@ const CoffeeShop = () => {
       )}
       {coffeeShop.status === 200 && (
         <>
-          {coffeeShop.data.status === "available" ? (
+          {/* {coffeeShop.data.status === "available" ? (
             <div className="w-full">
               <Stack spacing={2}>
                 <Alert
@@ -446,7 +289,61 @@ const CoffeeShop = () => {
                 </Alert>
               </Stack>
             </div>
+          )} */}
+          {coffeeShop.data.status === "unavailable" && (
+            <div className="my-2">
+              <Stack spacing={2}>
+                <Alert severity="info">
+                  <p className="flex text-2xl">
+                    Wait for admin to approve your shop
+                  </p>
+                </Alert>
+              </Stack>
+            </div>
           )}
+          {!packageSubscription?.data && (
+            <div className="w-full">
+              <Stack spacing={2}>
+                <Alert
+                  severity="info"
+                  action={
+                    <NavLink to="/management/coffeeShop/package">
+                      <Button variant="filled" color="inherit">
+                        Subscribe
+                      </Button>
+                    </NavLink>
+                  }
+                >
+                  <p className="text-2xl">
+                    Please subscribe a package to publish your shop to customer
+                  </p>
+                </Alert>
+              </Stack>
+            </div>
+          )}
+          {packageSubscription?.data &&
+            packageSubscription.data.endTimestamp <
+              new Date().getTime() - 7 * 24 * 60 * 60 * 1000 && (
+              <div className="w-full">
+                <Stack spacing={2}>
+                  <Alert
+                    severity="info"
+                    action={
+                      <NavLink to="/management/coffeeShop/package">
+                        <Button variant="filled" color="inherit">
+                          Subscribe
+                        </Button>
+                      </NavLink>
+                    }
+                  >
+                    <p className="text-2xl">
+                      Your package is about to be expired, please subscribe a
+                      new package to continue publish your shop to customer
+                    </p>
+                  </Alert>
+                </Stack>
+              </div>
+            )}
           <div className="grid grid-cols-[1fr_1fr] px-[5rem] gap-2 pt-3 pb-10">
             {/* Section 1 */}
             <div className="flex flex-col">
@@ -631,6 +528,54 @@ const CoffeeShop = () => {
                   <Popup>Your shop is here</Popup>
                 </Marker>
               </MapContainer>
+              {packageSubscription?.data && (
+                <div className="bg-white">
+                  <p className="mx-4 text-3xl font-semibold">
+                    Current subscribe package
+                  </p>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <div className="p-4 flex flex-col gap-2 bg-white">
+                        <div className="flex justify-between">
+                          <h1 className="text-3xl font-bold">
+                            {packageSubscription?.data.packageId.name}
+                          </h1>
+                          <p className="text-2xl font-bold text-gray-500">
+                            đ{" "}
+                            {FormatNumber(
+                              packageSubscription?.data.packageId.price
+                            )}
+                            <span className="text-sm">
+                              /{packageSubscription?.data.packageId.duration}{" "}
+                              day
+                            </span>
+                          </p>
+                        </div>
+                        <p>{packageSubscription?.data.packageId.description}</p>
+                        <div className="flex justify-between">
+                          <p className="text-2xl font-semibold">
+                            Start date:{" "}
+                            {DateFormater(
+                              packageSubscription?.data.startTime
+                            )}
+                          </p>
+                          <p className="text-2xl font-semibold">
+                            End date:{" "}
+                            {DateFormater(
+                              packageSubscription?.data.endTime
+                            )}
+                          </p>
+                        </div>
+                        <NavLink to="/management/coffeeShop/package">
+                          <Button variant="contained" color="primary" fullWidth>
+                            To package
+                          </Button>
+                        </NavLink>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+              )}
               {/* <div className="bg-white">
                 <p className="mx-4 text-3xl font-semibold">Area</p>
                 <Button

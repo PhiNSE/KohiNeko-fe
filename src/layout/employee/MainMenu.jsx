@@ -10,7 +10,7 @@ const MainMenu = ({ menuItems }) => {
       gap: 1.2rem;
 
       color: #000000; /* Change this to the color you want for the text */
-      font-size: 1.3rem;
+      font-size: 1rem;
       font-weight: 500;
       padding: 1.2rem 2.4rem;
       transition: all 0.3s;
@@ -27,8 +27,8 @@ const MainMenu = ({ menuItems }) => {
     }
 
     & svg {
-      width: 2rem; /* Increase the size of the icon */
-      height: 2rem; /* Increase the size of the icon */
+      width: 1.5rem; /* Increase the size of the icon */
+      height: 1.5rem; /* Increase the size of the icon */
       color: #000000; /* Change this to the color you want for the icon */
       transition: all 0.3s;
     }
@@ -47,9 +47,7 @@ const MainMenu = ({ menuItems }) => {
           <li key={item.path}>
             <StyledNavLink to={item.path}>
               <item.icon size='1.3rem' />
-              <span className='w-[6em]' >
-              {item.label}
-              </span>
+              <span className='w-[6em]'>{item.label}</span>
             </StyledNavLink>
           </li>
         ))}

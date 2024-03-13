@@ -57,6 +57,26 @@ export async function getAllTablesInArea(areaId) {
   return data;
 }
 
+export async function searchTable([coffeeShopId, keyword, searchBy]) {
+  const params = {};
+  params[searchBy] = keyword;
+  const url = `/tableTypes/coffeeShops/${coffeeShopId}/search?${new URLSearchParams(
+    params
+  ).toString()}`;
+  // const url = `/coffeeShops/${coffeeShopId}/cats/search?keyword=${keyword}`
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    headers: { Authorization: token, "Content-Type": `application/json` },
+    params: {},
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  const data = await response.json();
+  return data;
+}
+
 export async function addTable([areaId, tableTypeId, table]) {
   const url = `/tables/areas/${areaId}/tableType/${tableTypeId}`;
   const token = localStorage.getItem("Authorization");

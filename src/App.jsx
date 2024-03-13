@@ -33,6 +33,10 @@ import Area from './features/management/area/Area';
 import ItemStaff from './features/itemsStaff/Items';
 import AdminLayout from './layout/employee/admin/AdminLayout';
 import Manager from './features/admin/manager/Manager';
+import CatList from './features/staff/CatList';
+import BookingManager from './features/management/booking/Booking';
+import BookingDetail from './features/management/booking/BookingDetail';
+import BookingDetailManager from './features/management/booking/BookingDetail';
 // import StaffLayout from "./components/StaffLayout";
 
 const Home = lazy(() => import('./pages/guest/Home'));
@@ -65,6 +69,9 @@ const ResetPassword = lazy(() =>
 );
 const ForgotPassword = lazy(() =>
   import('./features/authentication/ForgetPassword')
+);
+const ManagerBooking = lazy(() =>
+  import('./features/management/booking/Booking')
 );
 
 //* Create  query client
@@ -188,12 +195,24 @@ function App() {
                       <Route path='/management/staff' element={<Staff />} />
                       <Route path='/management/table' element={<Table />} />
                       <Route
+                        path='/management/booking'
+                        element={<BookingManager />}
+                      />
+                      <Route
+                        path='/management/booking/:bookingId'
+                        element={<BookingDetailManager />}
+                      />
+                      <Route
                         path='/management/coffeeShop'
                         element={<CoffeeShop />}
                       />
                       <Route
                         path='/management/profile'
                         element={<ManagerProfile />}
+                      />
+                      <Route
+                        path='/management/booking'
+                        element={<ManagerBooking />}
                       />
                     </Route>
                     <Route path='/login' element={<Login />} />
@@ -217,7 +236,6 @@ function App() {
                         path='booking/:bookingId/items'
                         element={<ItemStaff />}
                       />
-                      <Route path='cat' element={<h1>Ths is cat</h1>} />
                     </Route>
 
                     {/* Admin role */}

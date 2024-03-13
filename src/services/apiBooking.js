@@ -304,3 +304,90 @@ export async function getTotalCoffeeShopBookingHistory(
   const data = await response.json();
   return data;
 }
+
+export async function getBookingByShop(page = 1, perPage = 5) {
+  const url = `/bookings/coffeeShop/data?page=${page}&perPage=${perPage}`;
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    params: {},
+    headers: { Authorization: token, "Content-Type": "application/json" },
+  };
+
+  const response = await fetch(DEFAULT_API_URL + url, options);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function managerGetBookingHistory(
+  page,
+  perPage,
+  bookingStatus,
+  sort,
+  key
+) {
+  const url = `/bookings/CoffeeShop/data?page=${page}&perPage=${perPage}&bookingStatus=${bookingStatus}&sort=${sort}&key=${key}`;
+  const token = localStorage.getItem("Authorization");
+  console.log(url, "url");
+  const options = {
+    method: "GET",
+    params: {},
+    headers: { Authorization: token, "Content-Type": `application/json` },
+  };
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  if (!response.ok) {
+    if (response.status === 401) {
+      const refreshToken = await getRefreshToken();
+      if (refreshToken) {
+        localStorage.setItem("Authorization", refreshToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        return getCustomerBookingHistory(page, perPage, bookingStatus);
+      } else {
+        console.log("Refresh token is expired");
+        throw new Error(response.message);
+      }
+    }
+  }
+  console.log(response);
+  const data = await response.json();
+  console.log(data, "data");
+  return data;
+}
+
+export async function managerGetTotalCoffeeShopBookingHistory(
+  bookingStatus,
+  sort,
+  key
+) {
+  console.log(bookingStatus, key, "bookingStatus");
+  const url = `/bookings/CoffeeShop/data/count?bookingStatus=${bookingStatus}&sort=${sort}&key=${key}`;
+  const token = localStorage.getItem("Authorization");
+
+  const options = {
+    method: "GET",
+    params: {},
+    headers: { Authorization: token, "Content-Type": `application/json` },
+  };
+  const response = await fetch(DEFAULT_API_URL + url, options);
+  if (!response.ok) {
+    if (response.status === 401) {
+      const refreshToken = await getRefreshToken();
+      if (refreshToken) {
+        localStorage.setItem("Authorization", refreshToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        return getCustomerBookingHistory(bookingStatus);
+      } else {
+        console.log("Refresh token is expired");
+        throw new Error(response.message);
+      }
+    }
+  }
+  console.log(response);
+  const data = await response.json();
+  return data;
+}

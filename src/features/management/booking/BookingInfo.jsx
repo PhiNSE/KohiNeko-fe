@@ -1,8 +1,10 @@
 import { TextField, Typography, Button } from "@mui/material";
-import { HiOutlineCheckCircle, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
-import FormatNumber from "../../../utils/NumberFormatter";
+import { HiOutlineCheckCircle, HiOutlineChevronRight } from "react-icons/hi";
+// import FormatNumber from "../../../utils/NumberFormatter";
 import EmptyBox from "../../../assets/empty_box.png";
 import { useNavigate } from "react-router-dom";
+import { SlArrowLeftCircle } from "react-icons/sl";
+import Status from "../../../components/Status";
 
 const BookingInfo = ({ bookingInfo }) => {
   console.log(bookingInfo);
@@ -11,34 +13,27 @@ const BookingInfo = ({ bookingInfo }) => {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+  const FormatNumber = (num) => {
+    const str = num.toString();
+    const reversed = str.split("").reverse().join("");
+    const formatted = reversed.replace(/(\d{3})(?=\d)/g, "$1.");
+    return formatted.split("").reverse().join("");
+  };
   return (
     <>
       {Object.keys(bookingInfo).length > 0 ? (
         <div className="px-6 py-6 border-solid border-2 rounded-large">
           <Typography variant="h4" fontWeight="bold">
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Your booking</span>
-              <span>ID: {bookingInfo._id.slice(-4)}</span>
+              <span>Your booking ID: </span>
+              <span className="text-yellow-600">
+                {bookingInfo._id.slice(-4)}
+              </span>
             </div>
           </Typography>
           <Typography variant="h4" fontWeight="bold">
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              Status:{" "}
-              <span
-                className={
-                  bookingInfo.status === "pending"
-                    ? "text-orange-500"
-                    : bookingInfo.status === "in progress"
-                      ? "text-blue-500"
-                      : bookingInfo.status === "finished"
-                        ? "text-green-500"
-                        : bookingInfo.status === "refund"
-                          ? "text-red-500"
-                          : ""
-                }
-              >
-                {capitalizeFirstLetter(bookingInfo.status)}
-              </span>
+              Status: <Status name={bookingInfo.status} />
             </div>
           </Typography>
           <Typography sx={{ mt: 2 }} variant="h6" fontWeight="bold">
@@ -170,6 +165,72 @@ const BookingInfo = ({ bookingInfo }) => {
               </Typography>
               <TextField
                 defaultValue={bookingInfo.tableId?.tableTypeId.name}
+                color="warning"
+                variant="standard"
+                focused
+                // sx={{ width: "48%"}}
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <div className="cursor-pointer">
+                      <HiOutlineCheckCircle color="orange" size={24} />
+                    </div>
+                  ),
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex flex-row justify-between border-4 p-3 rounded-xl mt-5">
+            <div>
+              <Typography sx={{ mt: 2 }} variant="h6" fontWeight="bold">
+                Customer Email
+              </Typography>
+              <TextField
+                defaultValue={bookingInfo.customerId.email}
+                color="warning"
+                variant="standard"
+                focused
+                // sx={{ width: "48%"}}
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <div className="cursor-pointer">
+                      <HiOutlineCheckCircle color="orange" size={24} />
+                    </div>
+                  ),
+                }}
+              />
+            </div>
+            <div>
+              <Typography sx={{ mt: 2 }} variant="h6" fontWeight="bold">
+                Customer phone number
+              </Typography>
+              <TextField
+                defaultValue={bookingInfo.customerId.phoneNumber}
+                color="warning"
+                variant="standard"
+                focused
+                // sx={{ width: "48%"}}
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <div className="cursor-pointer">
+                      <HiOutlineCheckCircle color="orange" size={24} />
+                    </div>
+                  ),
+                }}
+              />
+            </div>
+            <div>
+              <Typography sx={{ mt: 2 }} variant="h6" fontWeight="bold">
+                Customer name
+              </Typography>
+              <TextField
+                defaultValue={
+                  bookingInfo.customerId.firstName +
+                  " " +
+                  bookingInfo.customerId.lastName
+                }
                 color="warning"
                 variant="standard"
                 focused

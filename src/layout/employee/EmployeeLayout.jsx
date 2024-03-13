@@ -3,7 +3,7 @@ import Sidebar from './Sidebar';
 
 const EmployeeLayout = ({ Header, Menu }) => {
   return (
-    <div className='grid grid-cols-[13rem,1fr] grid-rows-[auto,1fr] h-screen'>
+    <div className='grid grid-cols-[13rem,1fr] grid-rows-[auto,1fr] h-[110vh]'>
       <Sidebar Menu={Menu} />
       <Header />
       <main className='bg-orange-50 overflow-scroll'>

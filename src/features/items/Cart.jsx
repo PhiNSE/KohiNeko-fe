@@ -79,10 +79,14 @@ const Cart = ({ selectedItems, setSelectedItems, handleUpdateItem }) => {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className='text-lg px-3 py-2 border border-gray-300 rounded-sm bg-gray-100 font-semibold shadow-sm w-[8rem] h-[3rem]'
+            className='text-lg px-3 py-2 border bg-secondary  rounded-s font-semibold shadow-sm w-[8rem] h-[3rem] '
           >
             {filterOptions.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+                className='bg-secondary text-black hover:bg-secondary'
+              >
                 {option.label}
               </option>
             ))}

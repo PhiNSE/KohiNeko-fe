@@ -53,7 +53,7 @@ const ResetPassword = () => {
     <div className=' bg-orange-100 h-screen flex justify-center items-center  flex-col gap-3 py-6 text-primary'>
       <Logo />
       <div className='flex items-center gap-2 font-semibold'>
-        <h1>Reset Your Password</h1>A
+        <h1>Reset Your Password</h1>
         <MdOutlineLockReset size='2rem' />
       </div>
       <div>

@@ -8,8 +8,8 @@ import {
   ListSubheader,
   Menu,
   MenuItem,
-} from "@mui/material";
-import { useState } from "react";
+} from '@mui/material';
+import { useState } from 'react';
 import {
   HiChevronDown,
   HiChevronUp,
@@ -18,7 +18,7 @@ import {
   HiOutlineFilter,
   HiPencil,
   HiPlus,
-} from "react-icons/hi";
+} from 'react-icons/hi';
 
 const FilterList = ({ filterData, setValue }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,7 +32,7 @@ const FilterList = ({ filterData, setValue }) => {
   const handleClose = () => {
     setAnchorEl(null);
     setSelectedItem(null);
-    setValue("filter", {});
+    setValue('filter', {});
   };
 
   const handleOpenItem = (item) => {
@@ -44,7 +44,7 @@ const FilterList = ({ filterData, setValue }) => {
   };
 
   const handleChooseFilter = (key, value) => {
-    setValue("filter", { [key]: value });
+    setValue('filter', { [key]: value });
     setFilter(value);
     setAnchorEl(null);
   };
@@ -52,14 +52,14 @@ const FilterList = ({ filterData, setValue }) => {
   return (
     <div>
       <Button
-        variant="contained"
+        variant='contained'
         startIcon={<HiOutlineFilter />}
         onClick={handleClick}
       >
         Filter by {selectedItem && Object.keys(selectedItem)}
       </Button>
       <Menu
-        id="lock-menu"
+        id='lock-menu'
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -68,7 +68,7 @@ const FilterList = ({ filterData, setValue }) => {
           <MenuItem
             key={index}
             disableRipple
-            sx={{ "&:hover": { backgroundColor: "transparent" } }}
+            sx={{ '&:hover': { backgroundColor: 'transparent' } }}
           >
             <List>
               <ListItemButton onClick={() => handleOpenItem(item)}>
@@ -78,8 +78,8 @@ const FilterList = ({ filterData, setValue }) => {
                 <ListItemText primary={Object.keys(item)} />
                 {selectedItem === item ? <HiChevronDown /> : <HiChevronUp />}
               </ListItemButton>
-              <Collapse in={selectedItem === item} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+              <Collapse in={selectedItem === item} timeout='auto' unmountOnExit>
+                <List component='div' disablePadding>
                   {Object.values(item)[0].map((subItem, subIndex) => (
                     <ListItemButton
                       key={subIndex}

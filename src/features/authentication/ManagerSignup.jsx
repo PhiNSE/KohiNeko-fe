@@ -49,11 +49,11 @@ const ManagerSignup = () => {
     defaultValues: {},
   });
 
-  const [showPassword, setShowPassword] = useState(true);
   const [openExist, setOpenExist] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const inputsRef = useRef([]);
   const focusNextInput = (index) => {
@@ -482,9 +482,9 @@ const ManagerSignup = () => {
                               onClick={() => setShowPassword(!showPassword)}
                             >
                               {showPassword ? (
-                                <HiOutlineEyeSlash />
-                              ) : (
                                 <HiOutlineEye />
+                              ) : (
+                                <HiOutlineEyeSlash />
                               )}
                             </div>
                           ),
@@ -517,9 +517,9 @@ const ManagerSignup = () => {
                               }
                             >
                               {showConfirmPassword ? (
-                                <HiOutlineEyeSlash />
-                              ) : (
                                 <HiOutlineEye />
+                              ) : (
+                                <HiOutlineEyeSlash />
                               )}
                             </div>
                           ),
