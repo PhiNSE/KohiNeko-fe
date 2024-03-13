@@ -1,9 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createShop,
   getShopByUserId,
   updateShop,
-} from "../../../services/apiShops";
+} from '../../../services/apiShops';
 import {
   Alert,
   Button,
@@ -15,19 +15,20 @@ import {
   Grid,
   Stack,
   Typography,
-} from "@mui/material";
-import EmptyBox from "../../../assets/empty_box.png";
-import { useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import CustomDrawer from "../../../components/CustomDrawer";
-import { useForm } from "react-hook-form";
-import AddShop from "./AddShop";
-import { toastError, toastSuccess } from "../../../components/Toast";
-import { createShopImage, deleteShopImage } from "../../../services/apiImage";
-import { ManagerContext } from "../ManagerContext";
-import Splide from "@splidejs/splide";
-import { SplideSlide } from "@splidejs/react-splide";
-import CarouselImgae from "../../../components/CarouselImgae";
+} from '@mui/material';
+import EmptyBox from '../../../assets/empty_box.png';
+import emptyImg from '../../../assets//EmptyImg.jpg';
+import { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import CustomDrawer from '../../../components/CustomDrawer';
+import { useForm } from 'react-hook-form';
+import AddShop from './AddShop';
+import { toastError, toastSuccess } from '../../../components/Toast';
+import { createShopImage, deleteShopImage } from '../../../services/apiImage';
+import { ManagerContext } from '../ManagerContext';
+import Splide from '@splidejs/splide';
+import { SplideSlide } from '@splidejs/react-splide';
+import CarouselImgae from '../../../components/CarouselImgae';
 import {
   FaBookBookmark,
   FaBowlFood,
@@ -36,23 +37,24 @@ import {
   FaLocationDot,
   FaSquareParking,
   FaWifi,
-} from "react-icons/fa6";
-import { MdTableBar } from "react-icons/md";
-import { HiLocationMarker, HiMail, HiPencilAlt, HiPhone } from "react-icons/hi";
-import UpdateShop from "./UpdateShop";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { getPackageByShop } from "../../../services/apiPackage";
-import FormatNumber from "../../../utils/NumberFormatter";
-import { DateFormater, DateTimeFormater } from "../../../utils/DateFormater";
+} from 'react-icons/fa6';
+import { MdTableBar } from 'react-icons/md';
+import { HiLocationMarker, HiMail, HiPencilAlt, HiPhone } from 'react-icons/hi';
+import UpdateShop from './UpdateShop';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { getPackageByShop } from '../../../services/apiPackage';
+import FormatNumber from '../../../utils/NumberFormatter';
+import { DateFormater, DateTimeFormater } from '../../../utils/DateFormater';
+import Empty from '../../../components/Empty';
 
 const CoffeeShop = () => {
   const { coffeeShopId, setCoffeeShopId } = useContext(ManagerContext);
   const { data: coffeeShop, refetch: refetchCoffeeShop } = useQuery({
-    queryKey: ["shop"],
+    queryKey: ['shop'],
     queryFn: () => getShopByUserId(),
   });
   const { data: packageSubscription, refetch: refetchPackage } = useQuery({
-    queryKey: ["packageSubscription"],
+    queryKey: ['packageSubscription'],
     queryFn: () => getPackageByShop(),
   });
   const [showAddShop, setShowAddShop] = useState(false);
@@ -118,17 +120,17 @@ const CoffeeShop = () => {
             images,
           ]);
           if (res.status === 200) {
-            toastSuccess("Create shop successfully");
+            toastSuccess('Create shop successfully');
             refetchCoffeeShop();
           } else {
             toastError(res.message);
           }
         } else {
-          toastSuccess("Create shop successfully");
+          toastSuccess('Create shop successfully');
           refetchCoffeeShop();
         }
       } else {
-        toastError("Create shop failed");
+        toastError('Create shop failed');
       }
     } catch (error) {
       toastError(error.message);
@@ -172,14 +174,14 @@ const CoffeeShop = () => {
           deletedImages,
         ]);
         if (res.status === 200) {
-          console.log("Delete image successfully");
+          console.log('Delete image successfully');
         } else {
           toastError(res.message);
         }
         if (images.length > 0) {
           const res = await CreateShopImage.mutateAsync([coffeeShopId, images]);
           if (res.status === 200) {
-            console.log("Create image successfully");
+            console.log('Create image successfully');
           } else {
             toastError(res.message);
           }
@@ -200,21 +202,21 @@ const CoffeeShop = () => {
             deletedImages,
           ]);
           if (res.status === 200) {
-            console.log("Delete image successfully");
+            console.log('Delete image successfully');
           } else {
             toastError(res.message);
           }
         }
         if (newImages.length > 0) {
           images.filter(async (image) => {
-            if (typeof image === "object") {
+            if (typeof image === 'object') {
               if (images.length > 0) {
                 const res = await CreateShopImage.mutateAsync([
                   coffeeShopId,
                   images,
                 ]);
                 if (res.status === 200) {
-                  console.log("Create image successfully");
+                  console.log('Create image successfully');
                   refetchCoffeeShop();
                 } else {
                   toastError(res.message);
@@ -231,27 +233,27 @@ const CoffeeShop = () => {
       if (newInfo.length > 0) {
         const response = await UpdateShopInfo.mutateAsync([payload, _id]);
         if (response.status === 200) {
-          console.log("Update shop successfully");
+          console.log('Update shop successfully');
           refetchCoffeeShop();
         } else {
           toastError(response.message);
         }
       }
-      toastSuccess("Update shop successfully");
+      toastSuccess('Update shop successfully');
       refetchCoffeeShop();
     } catch (error) {
       toastError(error.message);
     }
   };
   return (
-    <div className="h-fit w-full">
-      {coffeeShop.message === "User has no coffee shop" && (
-        <div className="w-full h-screen flex flex-col justify-center items-center">
-          <img src={EmptyBox} alt="empty box" />
-          <Typography variant="h5">You have not owned any shop yet</Typography>
+    <div className='h-fit w-full'>
+      {coffeeShop?.message === 'User has no coffee shop' && (
+        <div className='w-full h-screen flex flex-col justify-center items-center'>
+          <img src={EmptyBox} alt='empty box' />
+          <Typography variant='h5'>You have not owned any shop yet</Typography>
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             onClick={() => setShowAddShop(true)}
           >
             First, please create a new shop
@@ -260,41 +262,11 @@ const CoffeeShop = () => {
       )}
       {coffeeShop.status === 200 && (
         <>
-          {/* {coffeeShop.data.status === "available" ? (
-            <div className="w-full">
+          {coffeeShop.data.status === 'unavailable' && (
+            <div className='my-2'>
               <Stack spacing={2}>
-                <Alert
-                  severity="info"
-                  action={
-                    <NavLink to="/management/coffeeShop/package">
-                      <Button variant="filled" color="inherit">
-                        Subscribe
-                      </Button>
-                    </NavLink>
-                  }
-                >
-                  <p className="text-2xl">
-                    Please subscribe a package to publish your shop to customer
-                  </p>
-                </Alert>
-              </Stack>
-            </div>
-          ) : (
-            <div className="my-2">
-              <Stack spacing={2}>
-                <Alert severity="info">
-                  <p className="flex text-2xl">
-                    Wait for admin to approve your shop
-                  </p>
-                </Alert>
-              </Stack>
-            </div>
-          )} */}
-          {coffeeShop.data.status === "unavailable" && (
-            <div className="my-2">
-              <Stack spacing={2}>
-                <Alert severity="info">
-                  <p className="flex text-2xl">
+                <Alert severity='info'>
+                  <p className='flex text-2xl'>
                     Wait for admin to approve your shop
                   </p>
                 </Alert>
@@ -302,19 +274,19 @@ const CoffeeShop = () => {
             </div>
           )}
           {!packageSubscription?.data && (
-            <div className="w-full">
+            <div className='w-full'>
               <Stack spacing={2}>
                 <Alert
-                  severity="info"
+                  severity='info'
                   action={
-                    <NavLink to="/management/coffeeShop/package">
-                      <Button variant="filled" color="inherit">
+                    <NavLink to='/management/coffeeShop/package'>
+                      <Button variant='filled' color='inherit'>
                         Subscribe
                       </Button>
                     </NavLink>
                   }
                 >
-                  <p className="text-2xl">
+                  <p className='text-2xl'>
                     Please subscribe a package to publish your shop to customer
                   </p>
                 </Alert>
@@ -324,19 +296,19 @@ const CoffeeShop = () => {
           {packageSubscription?.data &&
             packageSubscription.data.endTimestamp <
               new Date().getTime() - 7 * 24 * 60 * 60 * 1000 && (
-              <div className="w-full">
+              <div className='w-full'>
                 <Stack spacing={2}>
                   <Alert
-                    severity="info"
+                    severity='info'
                     action={
-                      <NavLink to="/management/coffeeShop/package">
-                        <Button variant="filled" color="inherit">
+                      <NavLink to='/management/coffeeShop/package'>
+                        <Button variant='filled' color='inherit'>
                           Subscribe
                         </Button>
                       </NavLink>
                     }
                   >
-                    <p className="text-2xl">
+                    <p className='text-2xl'>
                       Your package is about to be expired, please subscribe a
                       new package to continue publish your shop to customer
                     </p>
@@ -344,133 +316,137 @@ const CoffeeShop = () => {
                 </Stack>
               </div>
             )}
-          <div className="grid grid-cols-[1fr_1fr] px-[5rem] gap-2 pt-3 pb-10">
+          <div className='grid grid-cols-[1fr_1fr] px-[5rem] gap-2 pt-3 pb-10'>
             {/* Section 1 */}
-            <div className="flex flex-col">
+            <div className='flex flex-col'>
               {/* Images + Shop */}
-              <div className="bg-white px-5 flex flex-col gap-5">
+              <div className='bg-white px-5 flex flex-col gap-5'>
                 {/* Slide */}
-                {shopImages?.length === 0 ? (
-                  <Splide
-                    options={{
-                      type: "loop",
-                      gap: "3rem",
-                      autoplay: shopImages.length > 0,
-                      arrows: shopImages.length > 0,
-                    }}
-                    className="my-carousel"
-                  >
-                    <SplideSlide
-                      className={`flex justify-center items-center w-96 h-96`}
-                    >
-                      <img
-                        src={EmptyBox}
-                        alt="No images available"
-                        className="object-cover object-center w-full h-full"
-                      />
-                    </SplideSlide>
-                  </Splide>
+                {shopImages && shopImages.length === 0 ? (
+                  // <Splide
+                  //   options={{
+                  //     type: 'loop',
+                  //     gap: '3rem',
+                  //     autoplay: shopImages.length > 0,
+                  //     arrows: shopImages.length > 0,
+                  //   }}
+                  //   className='my-carousel'
+                  // >
+                  //   <SplideSlide
+                  //     className={`flex justify-center items-center w-96 h-96`}
+                  //   >
+                  //     <img
+                  //       src={emptyImg}
+                  //       alt='No images available'
+                  //       className='object-cover object-center w-full h-full'
+                  //     />
+                  //   </SplideSlide>
+                  // </Splide>
+                  <Empty object='Images' />
                 ) : (
-                  <CarouselImgae images={shopImages} altText={shopName} />
+                  <CarouselImgae
+                    images={shopImages}
+                    altText={`${shop.shopName}`}
+                  />
                 )}
 
                 {/* Shop Name */}
                 <div>
                   {/* Name */}
-                  <h1 className="text-4xl font-semibold">{shopName}</h1>
+                  <h1 className='text-4xl font-semibold'>{shopName}</h1>
                   {/* Address */}
-                  <div className="my-2 flex items-center gap-3">
+                  <div className='my-2 flex items-center gap-3'>
                     <HiLocationMarker size={20} />
-                    <p className="text-xl">{addressFull}</p>
+                    <p className='text-xl'>{addressFull}</p>
                   </div>
-                  <div className="my-2 flex items-center gap-3">
+                  <div className='my-2 flex items-center gap-3'>
                     <FaBookBookmark size={20} />
-                    <p className="text-xl">{shopDescription}</p>
+                    <p className='text-xl'>{shopDescription}</p>
                   </div>
-                  <div className="my-2 flex items-center gap-3">
+                  <div className='my-2 flex items-center gap-3'>
                     <HiMail size={20} />
-                    <p className="text-xl">{email}</p>
+                    <p className='text-xl'>{email}</p>
                   </div>
-                  <div className="my-2 flex items-center gap-3">
+                  <div className='my-2 flex items-center gap-3'>
                     <HiPhone size={20} />
-                    <p className="text-xl">{phone}</p>
+                    <p className='text-xl'>{phone}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Section 2 */}
-            <div className="h-auto w-auto flex flex-col gap-3 ">
+            <div className='h-auto w-auto flex flex-col gap-3 '>
               {/* Booking section */}
               {/* Opening time */}
-              <div className="flex gap-5 justify-center align-middle">
-                {" "}
-                <div className="bg-white w-[20rem] px-3 py-2">
-                  <h2 className="text-center text-3xl text-primary">
-                    Opening Times:{" "}
+              <div className='flex gap-5 justify-center align-middle'>
+                {' '}
+                <div className='bg-white w-[20rem] px-3 py-2'>
+                  <h2 className='text-center text-3xl text-primary'>
+                    Opening Times:{' '}
                   </h2>
                   <ul>
                     {openTime.map((time, index) => (
                       <li
                         key={index}
-                        className="grid grid-cols-2 items-center text-secondary"
+                        className='grid grid-cols-2 items-center text-secondary'
                       >
-                        <span className="font-bold">{time.day}:</span>
+                        <span className='font-bold'>{time.day}:</span>
                         <span>
-                          {" "}
+                          {' '}
                           {time.openHour} - {time.closeHour}
                         </span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-white w-[22rem] px-3 py-2">
-                  <h2 className="text-center text-3xl text-primary">
-                    Additional Information:{" "}
+                <div className='bg-white w-[22rem] px-3 py-2'>
+                  <h2 className='text-center text-3xl text-primary'>
+                    Additional Information:{' '}
                   </h2>
-                  <div className="grid grid-cols-2 text-secondary">
+                  <div className='grid grid-cols-2 text-secondary'>
                     <div>
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <FaSquareParking />
                         <Typography>Parking Lot</Typography>
                       </span>
 
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <FaWifi />
                         <Typography>Wifi Free</Typography>
                       </span>
 
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <MdTableBar />
                         <Typography>Outdoor Table</Typography>
                       </span>
                     </div>
 
                     <div>
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <FaCreditCard />
                         <Typography>Card Payment</Typography>
                       </span>
 
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <FaCat />
                         <Typography>Cute cats</Typography>
                       </span>
 
-                      <span className="flex items-center gap-2 text-xl">
+                      <span className='flex items-center gap-2 text-xl'>
                         <FaBowlFood />
                         <Typography>Food & drinks</Typography>
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-center">
-                    For more details contact us at{" "}
-                    <span className="text-primary font-bold">{phone}</span>
+                  <h3 className='text-center'>
+                    For more details contact us at{' '}
+                    <span className='text-primary font-bold'>{phone}</span>
                   </h3>
-                  <div className="flex justify-center">
+                  <div className='flex justify-center'>
                     <Button
-                      variant="contained"
-                      color="primary"
+                      variant='contained'
+                      color='primary'
                       startIcon={<HiPencilAlt />}
                       onClick={() => {
                         setShop(coffeeShop.data);
@@ -482,8 +458,8 @@ const CoffeeShop = () => {
                     {showUpdateShop && (
                       <form onSubmit={handleSubmit4(updateShopInfo)}>
                         <CustomDrawer
-                          id="updateShopDrawer"
-                          styles={{ width: "75%" }}
+                          id='updateShopDrawer'
+                          styles={{ width: '75%' }}
                           showModel={showUpdateShop}
                           setShowModel={setShowUpdateShop}
                           isFormFilled={isUpdateShopFormFilled}
@@ -502,8 +478,8 @@ const CoffeeShop = () => {
                             />
                           }
                           message={{
-                            header: "Update Shop",
-                            primaryBtn: "Done",
+                            header: 'Update Shop',
+                            primaryBtn: 'Done',
                           }}
                         />
                       </form>
@@ -517,7 +493,7 @@ const CoffeeShop = () => {
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 />
                 <Marker
                   position={[
@@ -529,45 +505,41 @@ const CoffeeShop = () => {
                 </Marker>
               </MapContainer>
               {packageSubscription?.data && (
-                <div className="bg-white">
-                  <p className="mx-4 text-3xl font-semibold">
+                <div className='bg-white'>
+                  <p className='mx-4 text-3xl font-semibold'>
                     Current subscribe package
                   </p>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <div className="p-4 flex flex-col gap-2 bg-white">
-                        <div className="flex justify-between">
-                          <h1 className="text-3xl font-bold">
+                      <div className='p-4 flex flex-col gap-2 bg-white'>
+                        <div className='flex justify-between'>
+                          <h1 className='text-3xl font-bold'>
                             {packageSubscription?.data.packageId.name}
                           </h1>
-                          <p className="text-2xl font-bold text-gray-500">
-                            đ{" "}
+                          <p className='text-2xl font-bold text-gray-500'>
+                            đ{' '}
                             {FormatNumber(
                               packageSubscription?.data.packageId.price
                             )}
-                            <span className="text-sm">
-                              /{packageSubscription?.data.packageId.duration}{" "}
+                            <span className='text-sm'>
+                              /{packageSubscription?.data.packageId.duration}{' '}
                               day
                             </span>
                           </p>
                         </div>
                         <p>{packageSubscription?.data.packageId.description}</p>
-                        <div className="flex justify-between">
-                          <p className="text-2xl font-semibold">
-                            Start date:{" "}
-                            {DateFormater(
-                              packageSubscription?.data.startTime
-                            )}
+                        <div className='flex justify-between'>
+                          <p className='text-2xl font-semibold'>
+                            Start date:{' '}
+                            {DateFormater(packageSubscription?.data.startTime)}
                           </p>
-                          <p className="text-2xl font-semibold">
-                            End date:{" "}
-                            {DateFormater(
-                              packageSubscription?.data.endTime
-                            )}
+                          <p className='text-2xl font-semibold'>
+                            End date:{' '}
+                            {DateFormater(packageSubscription?.data.endTime)}
                           </p>
                         </div>
-                        <NavLink to="/management/coffeeShop/package">
-                          <Button variant="contained" color="primary" fullWidth>
+                        <NavLink to='/management/coffeeShop/package'>
+                          <Button variant='contained' color='primary' fullWidth>
                             To package
                           </Button>
                         </NavLink>
@@ -700,8 +672,8 @@ const CoffeeShop = () => {
       {showAddShop && (
         <form onSubmit={handleSubmit1(addNewShop)}>
           <CustomDrawer
-            id="addShopDrawer"
-            styles={{ width: "75%" }}
+            id='addShopDrawer'
+            styles={{ width: '75%' }}
             showModel={showAddShop} // show drawer
             setShowModel={setShowAddShop} // set show drawer
             isFormFilled={isAddShopFormFilled} // check if form is filled to show submit button
@@ -718,8 +690,8 @@ const CoffeeShop = () => {
               />
             }
             message={{
-              header: "Add New Shop",
-              primaryBtn: "Done", // text of submit button (show when isFormFilled is true)
+              header: 'Add New Shop',
+              primaryBtn: 'Done', // text of submit button (show when isFormFilled is true)
             }}
           />
         </form>
