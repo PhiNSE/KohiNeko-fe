@@ -91,6 +91,14 @@ const MyBooking = () => {
     queryKey: ["totalBookingHistory", bookingStatus, debouncedSearch],
     queryFn: () => countTotalBookingByStatus(bookingStatus, debouncedSearch),
   });
+  function formatUTCDate(dateString) {
+    const date = new Date(dateString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
   if (isLoading)
     return (
       <div>
@@ -269,22 +277,8 @@ const MyBooking = () => {
                             {row.tableId?.tableTypeId?.name}
                           </TableCell>
                           <TableCell>{DateFormater(row.startTime)}</TableCell>
-                          <TableCell>
-                            {new Date(row.startTime).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                              hour12: false,
-                            })}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(row.endTime).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                              hour12: false,
-                            })}
-                          </TableCell>
+                          <TableCell>{formatUTCDate(row.startTime)}</TableCell>
+                          <TableCell>{formatUTCDate(row.endTime)}</TableCell>
                           <TableCell>
                             {FormatNumber(getTotalPrice(row))} VND
                           </TableCell>

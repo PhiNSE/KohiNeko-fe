@@ -74,6 +74,14 @@ const Booking = () => {
     setBookingStatus("");
     setPage(0);
   };
+  function formatUTCDate(dateString) {
+    const date = new Date(dateString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
 
   const { data: bookingCount, refetch: refetchBookingCount } = useQuery({
     queryKey: ["boookingCount", bookingStatus, key],
@@ -189,22 +197,8 @@ const Booking = () => {
                         {row.customerId.firstName} {row.customerId.lastName}
                       </TableCell>
                       <TableCell>{DateFormater(row.startTime)}</TableCell>
-                      <TableCell>
-                        {new Date(row.startTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                          hour12: false,
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(row.endTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                          hour12: false,
-                        })}
-                      </TableCell>
+                      <TableCell>{formatUTCDate(row.startTime)}</TableCell>
+                      <TableCell>{formatUTCDate(row.endTime)}</TableCell>
                       <TableCell>
                         {FormatNumber(getTotalPrice(row))} VND
                       </TableCell>
