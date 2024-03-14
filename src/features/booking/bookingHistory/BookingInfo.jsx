@@ -1,9 +1,5 @@
 import { TextField, Typography, Button } from "@mui/material";
-import {
-  HiOutlineCheckCircle,
-  HiOutlineChevronLeft,
-  HiOutlineChevronRight,
-} from "react-icons/hi";
+import { HiOutlineCheckCircle, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import FormatNumber from "../../../utils/NumberFormatter";
 import EmptyBox from "../../../assets/empty_box.png";
 import { useNavigate } from "react-router-dom";
@@ -14,15 +10,6 @@ const BookingInfo = ({ bookingInfo }) => {
   const navigate = useNavigate();
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  function formatUTCDate(dateString) {
-    const date = new Date(dateString);
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}:${minutes}`;
   }
   return (
     <>
@@ -42,12 +29,12 @@ const BookingInfo = ({ bookingInfo }) => {
                   bookingInfo.status === "pending"
                     ? "text-orange-500"
                     : bookingInfo.status === "in progress"
-                    ? "text-blue-500"
-                    : bookingInfo.status === "finished"
-                    ? "text-green-500"
-                    : bookingInfo.status === "refund"
-                    ? "text-red-500"
-                    : ""
+                      ? "text-blue-500"
+                      : bookingInfo.status === "finished"
+                        ? "text-green-500"
+                        : bookingInfo.status === "refund"
+                          ? "text-red-500"
+                          : ""
                 }
               >
                 {capitalizeFirstLetter(bookingInfo.status)}
@@ -132,9 +119,15 @@ const BookingInfo = ({ bookingInfo }) => {
               </Typography>
               <TextField
                 defaultValue={
-                  formatUTCDate(bookingInfo.startTime) +
+                  new Date(bookingInfo.startTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }) +
                   " - " +
-                  formatUTCDate(bookingInfo.endTime)
+                  new Date(bookingInfo.endTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
                 }
                 color="warning"
                 variant="standard"

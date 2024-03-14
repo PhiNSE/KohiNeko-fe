@@ -33,19 +33,10 @@ const MyBookingDetail = () => {
     return total;
   }
 
-  function formatUTCDate(dateString) {
-    const date = new Date(dateString);
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}:${minutes}`;
-  }
-
   return (
     <>
       <div className="mx-4 my-6">
-        <div className="mb-2">
+        <div className='mb-2'>
           <Button
             variant="outlined"
             color="warning"
@@ -66,8 +57,8 @@ const MyBookingDetail = () => {
               {/* <Items items={items} coffeeShopId={CoffeeShop._id} /> */}
               <CartStatic
                 selectedItems={booking.data.invoices}
-                // setSelectedItems={setSelectedItems}
-                // handleUpdateItem={handleUpdateItem}
+              // setSelectedItems={setSelectedItems}
+              // handleUpdateItem={handleUpdateItem}
               />
               <br />
               <hr />
@@ -105,7 +96,7 @@ const MyBookingDetail = () => {
                   )}{" "} */}
                   {FormatNumber(
                     booking.data.price +
-                      calculateTotalPrice(booking.data.invoices)
+                    calculateTotalPrice(booking.data.invoices)
                   )}{" "}
                   VND
                 </Typography>

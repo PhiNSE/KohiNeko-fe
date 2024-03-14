@@ -19,16 +19,6 @@ const BookingInfo = ({ bookingInfo }) => {
     const formatted = reversed.replace(/(\d{3})(?=\d)/g, "$1.");
     return formatted.split("").reverse().join("");
   };
-
-  function formatUTCDate(dateString) {
-    const date = new Date(dateString);
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}:${minutes}`;
-  }
-
   return (
     <>
       {Object.keys(bookingInfo).length > 0 ? (
@@ -124,9 +114,15 @@ const BookingInfo = ({ bookingInfo }) => {
               </Typography>
               <TextField
                 defaultValue={
-                  formatUTCDate(bookingInfo.startTime) +
+                  new Date(bookingInfo.startTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }) +
                   " - " +
-                  formatUTCDate(bookingInfo.endTime)
+                  new Date(bookingInfo.endTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
                 }
                 color="warning"
                 variant="standard"

@@ -133,14 +133,6 @@ const Booking = () => {
     setExitDialog(false);
   };
 
-  function formatUTCDate(dateString) {
-    const date = new Date(dateString);
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}:${minutes}`;
-  }
   // const getCloseDay(){
   //   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   //   const closeDays = [];
@@ -397,23 +389,24 @@ const Booking = () => {
   };
 
   const handleSelectDate = async () => {
-    const startTime = new Date(availableTime[buttonClicked - 1].startTime);
-    const utcStartTime =
-      startTime.getUTCHours().toString().padStart(2, "0") +
-      ":" +
-      startTime.getUTCMinutes().toString().padStart(2, "0") +
-      ":" +
-      startTime.getUTCSeconds().toString().padStart(2, "0");
-
-    const endTime = new Date(availableTime[buttonClicked - 1].endTime);
-    const utcEndTime =
-      endTime.getUTCHours().toString().padStart(2, "0") +
-      ":" +
-      endTime.getUTCMinutes().toString().padStart(2, "0") +
-      ":" +
-      endTime.getUTCSeconds().toString().padStart(2, "0");
-    setValue("from", utcStartTime);
-    setValue("to", utcEndTime);
+    const startTime = new Date(
+      availableTime[buttonClicked - 1].startTime
+    ).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const endTime = new Date(
+      availableTime[buttonClicked - 1].endTime
+    ).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    setValue("from", startTime);
+    setValue("to", endTime);
     setTimeFrom(startTime);
     setTimeTo(endTime);
     // setDatePicker(availableTime[buttonClicked - 1].date);
@@ -1431,8 +1424,15 @@ const Booking = () => {
                               color="warning"
                               onClick={() => handleClick(currentIdx)}
                             >
-                              {formatUTCDate(time.startTime)} -{" "}
-                              {formatUTCDate(time.endTime)}
+                              {new Date(time.startTime).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}{" "}
+                              -{" "}
+                              {new Date(time.endTime).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </Button>
                           );
                         })}

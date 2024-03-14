@@ -1,6 +1,6 @@
 export const DateFormater = (dateString) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
-  let date = new Date(dateString);
+  const date = new Date(dateString);
   return date.toLocaleDateString(undefined, options);
 };
 
@@ -12,7 +12,7 @@ export const DateTimeFormater = (dateTimeString) => {
   const hours = ("0" + date.getUTCHours()).slice(-2);
   const minutes = ("0" + date.getUTCMinutes()).slice(-2);
   const seconds = ("0" + date.getUTCSeconds()).slice(-2);
-
+  
   if (hours === "00" && minutes === "00" && seconds === "00") {
     return `${year}-${month}-${day}`;
   } else {
