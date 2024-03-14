@@ -133,6 +133,14 @@ const Booking = () => {
     setExitDialog(false);
   };
 
+  function formatUTCDate(dateString) {
+    const date = new Date(dateString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
   // const getCloseDay(){
   //   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   //   const closeDays = [];
@@ -1424,15 +1432,8 @@ const Booking = () => {
                               color="warning"
                               onClick={() => handleClick(currentIdx)}
                             >
-                              {new Date(time.startTime).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}{" "}
-                              -{" "}
-                              {new Date(time.endTime).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                              {formatUTCDate(time.startTime)} -{" "}
+                              {formatUTCDate(time.endTime)}
                             </Button>
                           );
                         })}
