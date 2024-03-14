@@ -397,24 +397,23 @@ const Booking = () => {
   };
 
   const handleSelectDate = async () => {
-    const startTime = new Date(
-      availableTime[buttonClicked - 1].startTime
-    ).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-    const endTime = new Date(
-      availableTime[buttonClicked - 1].endTime
-    ).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-    setValue("from", startTime);
-    setValue("to", endTime);
+    const startTime = new Date(availableTime[buttonClicked - 1].startTime);
+    const utcStartTime =
+      startTime.getUTCHours().toString().padStart(2, "0") +
+      ":" +
+      startTime.getUTCMinutes().toString().padStart(2, "0") +
+      ":" +
+      startTime.getUTCSeconds().toString().padStart(2, "0");
+
+    const endTime = new Date(availableTime[buttonClicked - 1].endTime);
+    const utcEndTime =
+      endTime.getUTCHours().toString().padStart(2, "0") +
+      ":" +
+      endTime.getUTCMinutes().toString().padStart(2, "0") +
+      ":" +
+      endTime.getUTCSeconds().toString().padStart(2, "0");
+    setValue("from", utcStartTime);
+    setValue("to", utcEndTime);
     setTimeFrom(startTime);
     setTimeTo(endTime);
     // setDatePicker(availableTime[buttonClicked - 1].date);
