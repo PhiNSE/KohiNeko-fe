@@ -1,6 +1,7 @@
 export const DateFormater = (dateString) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
-  const date = new Date(dateString);
+  let date = new Date(dateString);
+  date.setHours(date.getHours() + 17);
   return date.toLocaleDateString(undefined, options);
 };
 
